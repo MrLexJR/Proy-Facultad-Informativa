@@ -1,0 +1,166 @@
+.nav-img-1 {
+  margin: 10px;
+  width: 150px;
+  height: 65px;
+}
+
+#menu-toggle {
+  color: #0275d8;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+#menu-toggle:hover {
+  color: #075599;
+}
+
+// Sidebar CSS
+// Tabla Implementos CSS
+
+.fixed_header {
+  table-layout: fixed;
+  border-collapse: collapse;
+}
+
+.fixed_header thead tr {
+  display: flow-root;
+}
+.fixed_header tbody {
+  display: block;
+  width: 100%;
+  overflow: auto;
+  height: 233px;
+}
+
+.fixed_header tbody th {
+  width: 110px;
+}
+.fixed_header td {
+  width: 220px;
+}
+
+// Tabla Horario CSS
+
+.Tab_f {
+  table-layout: fixed;
+  border-collapse: collapse;
+}
+
+.Tab_f thead tr {
+  display: flow-root;
+}
+
+.Tab_f tbody {
+  display: block;
+  width: 100%;
+  overflow: auto;
+  height: 249px;
+  font-size: 11px;
+}
+
+.Tab_f tbody th {
+  width: 50px;
+}
+.Tab_f td {
+  width: 142px;
+}
+
+// Tabla Docentes CSS
+.Tab_Doc {
+  table-layout: fixed;
+  border-collapse: collapse;
+}
+
+.Tab_Doc thead tr {
+  display: flow-root;
+}
+
+.Tab_Doc tbody {
+  display: block;
+  width: 100%;
+  overflow: auto;
+  height: 321px;
+}
+.Tab_Doc thead th {
+  width: 180px;
+}
+
+.Tab_Doc td {
+  width: 180px;
+}
+
+//Tabla Implementos Admin CSS
+.TbIm_Admin {
+  table-layout: fixed;
+  border-collapse: collapse;
+}
+
+.TbIm_Admin thead tr,
+.TbIm_Admin tbody tr {
+  display: flex;
+}
+
+.TbIm_Admin tbody {
+  display: block;
+  width: 100%;
+  overflow: auto;
+  height: 40vh;
+  margin-left: 0.5%;
+}
+
+.TbIm_Admin .t_i_desc {
+  width: 40%;
+}
+.TbIm_Admin .t_i_mar_cant {
+  width: 25%;
+}
+.TbIm_Admin .t_i_opc {
+  width: 10%;
+}
+
+//accorddion
+//level 1
+#sidebar-wrapper .list-group .collapse .list-group-item {
+  padding-left: 30px;
+  background-color: #e8e8e8;
+}
+//level 2
+#sidebar-wrapper .list-group .collapse > .collapse .list-group-item {
+  padding-left: 40px;
+  background-color: #d2d2d2;
+}
+
+// Style de las tabs 
+
+#tabs .nav-tabs .nav-link {
+  border: 1px solid transparent;
+  border-top-left-radius: 0.25rem;
+  border-top-right-radius: 0.25rem;
+  color: #0062cc;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+#tabs .nav-tabs .nav-link.active {
+  color: #0062cc;
+  background-color: transparent;
+  border-color: transparent transparent #f3f3f3;
+  border-bottom: 3px solid !important;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+
+// modal para la imagen 
+
+#panorama{
+  height: 285px ;
+  width: 760px;
+  margin: 0.25em;
+}
+
+// container model 3d
+#container-360{
+  height: 70vh;
+  margin: 1em;
+}

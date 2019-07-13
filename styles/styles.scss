@@ -1,0 +1,20 @@
+@import '~bootstrap/scss/bootstrap';
+
+$ionicons-font-path: "/fonts/ionicons" !default;
+@import "../node_modules/ionicons/dist/scss/ionicons";
+@import "../node_modules/bootstrap/scss/bootstrap.scss";
+
+@import "../styles/my-styles.scss";
+@import "../styles/simple-sidebar.scss";
+
+.navbar {
+  border-bottom: 1px solid #ddd;
+}
+
+// .embed360 {
+//   height: 470px;
+//   // max-width: 700px;
+//   margin: 1em;
+// }
+
+
