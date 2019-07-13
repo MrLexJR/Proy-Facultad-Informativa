@@ -6,6 +6,7 @@ function Post(props) {
     <Layout>
       <h1>{props.router.query.title}</h1>
       <p>This is the blog post content.</p>
+      <p>No entiendo</p>
     </Layout>
   )
 }
