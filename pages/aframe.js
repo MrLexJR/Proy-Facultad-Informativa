@@ -53,7 +53,7 @@ export default class extends React.Component {
                   <Entity id="Aula-111" 
                      geometry={{ primitive: 'box',  width: 100, height:50 }}
                      material={{ color: 'white'}}
-                     position={{x: 75, y: 65, z: -390}} //-520
+                     position={{x: 75, y: 65, z: -380}} //-520
                      events={{ click: this.toggle }}>
                      <Entity text={{value: 'Aula 106', width: 500, align: 'center', color:'blue'}}  />
                   </Entity>
