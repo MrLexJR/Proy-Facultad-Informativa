@@ -49,7 +49,6 @@ export default class extends React.Component {
       <Layout {...this.props}>
         <HdModal state={this.state} toggle={this.toggle} tab_toggle={this.tab_toggle} />
         <Row><Col>
-        
             <div id='container-360'>
               <RenderScene/>
             </div>
