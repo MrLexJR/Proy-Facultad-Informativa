@@ -41,7 +41,6 @@ export default class extends React.Component {
       return (
          <div style={{ height: '100%', width: '100%' }} >
             <HdModal state={this.state} toggle={this.toggle} tab_toggle={this.tab_toggle} />
-            <a href="#" onClick={this.toggle} >Aula 101</a>
             {this.state.appRendered &&
                <a-scene embedded style={{ display: 'block' }} >
                   {/* <a-camera listener id='camara-3d' wasd-controls="acceleration: 1000" ></a-camera> */}

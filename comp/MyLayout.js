@@ -3,7 +3,6 @@ import Head from 'next/head'
 import Link from 'next/link'
 import classnames from 'classnames'
 import Styles from '../styles/styles.scss'
-import StepWizard from 'react-step-wizard'
 import Package from '../package'
 import $ from 'jquery'
 import {
@@ -300,10 +299,7 @@ export class HdModal extends React.Component {
           <ModalBody>
             <Row>
               <Col md="12">
-                <StepWizard isHashEnabled>
-                  <Modal_Pers_Info />
-                  <Second />
-                </StepWizard>
+                  <Modal_Pers_Table />
               </Col>
             </Row>
           </ModalBody>
@@ -534,12 +530,21 @@ export class Modal_Amb_Horario extends React.Component {
   }
 }
 
-export class Modal_Pers_Info extends React.Component {
+export class Modal_Pers_Table extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      data_row: []
-    };
+      data_row: [],
+      modal_per: false, select_per:'',backdrop: 'static'
+    }
+    this.toggle = this.toggle.bind(this);
+  }
+
+  toggle(e) {
+    this.setState(prevState => ({
+      modal_per: !prevState.modal,
+      select_per: event.target.text
+    }));
   }
   componentDidMount() {
     // Jquery here $(...)...
@@ -560,12 +565,9 @@ export class Modal_Pers_Info extends React.Component {
   render() {
     return (
       <Container >
-        <Form inline>
           <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
             <Input id="myInput" type="text" placeholder="Search.." />{''}
           </FormGroup>
-          <Button onClick={this.props.nextStep}>Next Step</Button><br />
-        </Form>
         <br />
         <Table hover className='Tab_Doc' >
           <thead>
@@ -578,7 +580,7 @@ export class Modal_Pers_Info extends React.Component {
           </thead>
           <tbody id="myTable">
             <tr id='r1' >
-              <td><a>John</a></td>
+              <td><a onClick={this.toggle}>John</a></td>
               <td>Doe</td>
               <td>john@example.com</td>
               <td>Docente</td>
@@ -603,20 +605,25 @@ export class Modal_Pers_Info extends React.Component {
             </tr>
           </tbody>
         </Table>
+        <Modal_Pers_Info state={this.state} toggle={this.toggle}  />
       </Container>
     )
   }
 }
 
-export class Second extends React.Component {
+export class Modal_Pers_Info extends React.Component {
   render() {
     return (
-      <Container>
-        <h2>Step  {this.props.currentStep} </h2>
-        <p>Total Steps: {this.props.totalSteps}</p>
-        <p>Is Active: {this.props.isActive}</p>
-        <p><button onClick={this.props.previousStep}>Previous Step</button></p>
-      </Container>
+      <Modal backdrop={this.props.state.backdrop} isOpen={this.props.state.modal_per} toggle={this.props.state.toggle} >
+        <ModalHeader toggle={this.props.state.toggle}><span className='mr-2'>{this.props.state.select_per}</span></ModalHeader>
+          <ModalBody>
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+          </ModalBody>
+          <ModalFooter>
+            <Button color="primary" onClick={this.toggle}>Do Something</Button>{' '}
+            <Button color="secondary" onClick={this.toggle}>Cancel</Button>
+          </ModalFooter>
+      </Modal>
     )
   }
 }
