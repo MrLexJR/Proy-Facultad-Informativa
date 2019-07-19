@@ -8,7 +8,7 @@ import $ from 'jquery'
 import {
   Container, Input, Navbar, NavbarBrand, Nav, NavItem, Button, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem,
   Modal, ModalHeader, ModalBody, ModalFooter, Col, FormGroup, Label, Row, Table, NavbarToggler, Form,
-  TabContent, TabPane, NavLink, Collapse
+  TabContent, TabPane, NavLink, Collapse, Card, CardBody
 } from 'reactstrap'
 
 
@@ -29,15 +29,16 @@ export default class extends React.Component {
 
   render() {
     return (
-        <React.Fragment>
-          <Head>
-            <title>{this.props.name || 'FCI - 3D'}</title>
-            {/* <script src="https://aframe.io/releases/0.9.1/aframe.min.js"></script> */}
-            <link rel="stylesheet" href="https://cdn.pannellum.org/2.4/pannellum.css" />
-            <script type="text/javascript" src="https://cdn.pannellum.org/2.4/pannellum.js"></script>
-          </Head>
-            <BarraNav1 {...this.props} />
-        </React.Fragment>
+      <React.Fragment>
+        <Head>
+          <title>{this.props.name || 'FCI - 3D'}</title>
+          {/* <script src="https://aframe.io/releases/0.9.1/aframe.min.js"></script> */}
+          <style dangerouslySetInnerHTML={{ __html: Styles }} />
+          <link rel="stylesheet" href="https://cdn.pannellum.org/2.4/pannellum.css" />
+          <script type="text/javascript" src="https://cdn.pannellum.org/2.4/pannellum.js"></script>
+        </Head>
+        <BarraNav1 {...this.props} />
+      </React.Fragment>
     )
   }
 }
@@ -45,9 +46,9 @@ export default class extends React.Component {
 export class MainBody extends React.Component {
   render() {
     return (
-        <Container fluid={this.props.fluid} style={{ marginTop: '1em' }}>
-          {this.props.children}
-        </Container>
+      <Container fluid={this.props.fluid} style={{ marginTop: '1em' }}>
+        {this.props.children}
+      </Container>
     )
   }
 }
@@ -64,13 +65,14 @@ export class BarraNav1 extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      modal: false, selectAmb: '',                         // variables del Modal y de la info del docente y aula 
+      modal: false, selectAmb: '', closeAll: false,                        // variables del Modal y de la info del docente y aula 
       activeTab: '1',                                      // Variable del navTab en la info del aula
       collapse: false, collapse1: false, collapse2: false, collapse3: false,
       isOpen: false
     }
     this.nav_toggle = this.nav_toggle.bind(this);
     this.toggle = this.toggle.bind(this);
+    this.toggleAll = this.toggleAll.bind(this);
     this.acc_toggle = this.acc_toggle.bind(this);
     this.acc_m_toggle = this.acc_m_toggle.bind(this);
     this.tab_toggle = this.tab_toggle.bind(this);
@@ -107,6 +109,13 @@ export class BarraNav1 extends React.Component {
       modal: !prevState.modal,
       selectAmb: event.target.text
     }));
+  }
+
+  toggleAll() {
+    this.setState({
+      modal: !this.state.nestedModal,
+      closeAll: true
+    });
   }
 
   tab_toggle(tab) {
@@ -193,7 +202,7 @@ export class BarraNav1 extends React.Component {
                 </p>
               </Container>
             </MainBody>
-            <HdModal state={this.state} toggle={this.toggle} tab_toggle={this.tab_toggle} />
+            <HdModal state={this.state} toggle={this.toggle} tab_toggle={this.tab_toggle} toggleAll={this.toggleAll} />
           </div>
         </div>
       </div>
@@ -299,7 +308,7 @@ export class HdModal extends React.Component {
           <ModalBody>
             <Row>
               <Col md="12">
-                  <Modal_Pers_Table />
+                <Modal_Pers_Table {...this.props} state={this.props.state} toggleAll={this.props.toggleAll} />
               </Col>
             </Row>
           </ModalBody>
@@ -397,12 +406,12 @@ export class Modal_Amb_Img extends React.Component {
       "yaw": -135.4,
       "hfov": 120,
       "hotSpots": [{
-          "pitch": 2.5,
-          "yaw": -154,
-          "type": "info",
-          "text": "Aula 104",
-          "URL": "/Login"
-        }],
+        "pitch": 2.5,
+        "yaw": -154,
+        "type": "info",
+        "text": "Aula 104",
+        "URL": "/Login"
+      }],
     });
     document.body.appendChild(script);
   }
@@ -535,17 +544,19 @@ export class Modal_Pers_Table extends React.Component {
     super(props)
     this.state = {
       data_row: [],
-      modal_per: false, select_per:'',backdrop: 'static'
+      modal_per: false, select_per: '', closeAll: this.props.state.closeAll
     }
-    this.toggle = this.toggle.bind(this);
+    this.toggle_per = this.toggle_per.bind(this);
   }
 
-  toggle(e) {
+  toggle_per(e) {
     this.setState(prevState => ({
       modal_per: !prevState.modal,
-      select_per: event.target.text
+      select_per: event.target.text,
+      closeAll: false
     }));
   }
+
   componentDidMount() {
     // Jquery here $(...)...
     $(document).ready(function () {
@@ -564,49 +575,50 @@ export class Modal_Pers_Table extends React.Component {
   }
   render() {
     return (
-      <Container >
+      <div>
           <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
             <Input id="myInput" type="text" placeholder="Search.." />{''}
+            {console.log(this.state.closeAll)}
           </FormGroup>
-        <br />
-        <Table hover className='Tab_Doc' >
-          <thead>
-            <tr>
-              <th>First Name</th>
-              <th>Last Name</th>
-              <th>Username</th>
-              <th>Cargo</th>
-            </tr>
-          </thead>
-          <tbody id="myTable">
-            <tr id='r1' >
-              <td><a onClick={this.toggle}>John</a></td>
-              <td>Doe</td>
-              <td>john@example.com</td>
-              <td>Docente</td>
-            </tr>
-            <tr id='r2'>
-              <td>Mary</td>
-              <td>Moe</td>
-              <td>mary@mail.com</td>
-              <td>Secretaria</td>
-            </tr>
-            <tr id='r3'>
-              <td>July</td>
-              <td>Dooley</td>
-              <td>july@greatstuff.com</td>
-              <td>Asist. Limpieza</td>
-            </tr>
-            <tr id='r4'>
-              <td>Anja</td>
-              <td>Ravendale</td>
-              <td>a_r@test.com</td>
-              <td>Decano/Docente</td>
-            </tr>
-          </tbody>
-        </Table>
-        <Modal_Pers_Info state={this.state} toggle={this.toggle}  />
-      </Container>
+          <br />
+          <Table hover className='Tab_Doc' >
+            <thead>
+              <tr>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Username</th>
+                <th>Cargo</th>
+              </tr>
+            </thead>
+            <tbody id="myTable">
+              <tr id='r1' >
+                <td><a onClick={this.toggle_per}>John</a></td>
+                <td>Doe</td>
+                <td>john@example.com</td>
+                <td>Docente</td>
+              </tr>
+              <tr id='r2'>
+                <td>Mary</td>
+                <td>Moe</td>
+                <td>mary@mail.com</td>
+                <td>Secretaria</td>
+              </tr>
+              <tr id='r3'>
+                <td>July</td>
+                <td>Dooley</td>
+                <td>july@greatstuff.com</td>
+                <td>Asist. Limpieza</td>
+              </tr>
+              <tr id='r4'>
+                <td>Anja</td>
+                <td>Ravendale</td>
+                <td>a_r@test.com</td>
+                <td>Decano/Docente</td>
+              </tr>
+            </tbody>
+          </Table>
+        <Modal_Pers_Info state={this.state} toggle_per={this.toggle_per} toggleAll={this.props.toggleAll} />
+      </div>
     )
   }
 }
@@ -614,15 +626,21 @@ export class Modal_Pers_Table extends React.Component {
 export class Modal_Pers_Info extends React.Component {
   render() {
     return (
-      <Modal backdrop={this.props.state.backdrop} isOpen={this.props.state.modal_per} toggle={this.props.state.toggle} >
-        <ModalHeader toggle={this.props.state.toggle}><span className='mr-2'>{this.props.state.select_per}</span></ModalHeader>
-          <ModalBody>
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-          </ModalBody>
-          <ModalFooter>
-            <Button color="primary" onClick={this.toggle}>Do Something</Button>{' '}
-            <Button color="secondary" onClick={this.toggle}>Cancel</Button>
-          </ModalFooter>
+      <Modal isOpen={this.props.state.modal_per} toggle={this.props.toggle_per} onClosed={this.props.state.closeAll ? this.props.toggleAll : undefined} className='modal-md'>
+        <ModalHeader> <span className='mr-2'>{this.props.state.select_per} {this.props.state.closeAll}</span></ModalHeader>
+        <ModalBody>
+          <Row>
+            <Col md={6}>
+              <Card>
+                <p>Hola</p>
+              </Card>
+            </Col>
+          </Row>
+        </ModalBody>
+        <ModalFooter>
+          <Button color="primary" onClick={this.props.closeAll}>Cerrar todo</Button>{' '}
+          <Button color="secondary" onClick={this.props.toggle_per}>Cancel</Button>
+        </ModalFooter>
       </Modal>
     )
   }
