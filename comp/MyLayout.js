@@ -652,7 +652,7 @@ export class Modal_Pers_Info extends React.Component {
                 <Input plaintext defaultValue='pedro@hotmail.com' />
 
                 <Label style={{display: 'initial'}} className="font-weight-bold" for="ema_pers">Horario de Atencion:</Label>
-                <Input plaintext defaultValue='Lunes: 09:00 a 10:00' />
+                <Input plaintext defaultValue='Lunes: 9:00 a 10:00' />
               </FormGroup>
             </Col>
           </Row>
