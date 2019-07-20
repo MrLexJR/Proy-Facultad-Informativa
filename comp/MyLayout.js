@@ -553,6 +553,7 @@ export class Modal_Pers_Table extends React.Component {
     super(props)
     this.state = {
       data_row: [],
+      rows_pers: []
     }
     this.selec_per = this.selec_per.bind(this);
   }
@@ -561,65 +562,67 @@ export class Modal_Pers_Table extends React.Component {
     console.log(event)
   }
 
+  getPersonal() {
+    fetch('/auth/personal', {
+      credentials: 'include'
+    })
+      .then(res => res.json())
+      .then(response => {
+        if (!response) return
+        this.setState({
+          rows_pers: response.results
+        })
+      })
+  }
+
+  renderTableData() {
+    return this.state.rows_pers.map((row) => {
+      const { id_personal, nombres, apellidos, correo, horario, descripcion } = row
+      return (
+        <tr onClick={this.props.toggleNested} key={id_personal} id={id_personal}>
+          <td className='t_i_desc'>{nombres}{''}{apellidos}</td>
+          <td className='t_i_mar_cant' >{correo}</td>
+          <td className='t_i_mar_cant' >{descripcion}</td>
+        </tr>
+      )
+    })
+  }
 
   componentDidMount() {
+    this.getPersonal();
+
     // Jquery here $(...)...
-    $(document).ready(function () {
-      $("#myInput").on("keyup", function () {
-        var value = $(this).val().toLowerCase();
-        $("#myTable tr").filter(function () {
-          $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-        });
-      });
-      $("#r1, #r2, #r3, #r4").click(function () {
-        var row = $(this).closest("tr");    // Find the row
-        console.log(row[0].innerText);
-      });
-    });
+    // $(document).ready(function () {
+    //   $("#myInput").on("keyup", function () {
+    //     var value = $(this).val().toLowerCase();
+    //     $("#myTable tr").filter(function () {
+    //       $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    //     });
+    //   });
+    //   $("#r1, #r2, #r3, #r4").click(function () {
+    //     var row = $(this).closest("tr");    // Find the row
+    //     console.log(row[0].innerText);
+    //   });
+    // });
 
   }
   render() {
     return (
       <div>
         <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
-          {/* <Input id="myInput" type="text" placeholder="Search.." />{''} */}
           <Input id="myInput" type="search" name="search" placeholder="search placeholder" />
         </FormGroup>
         <br />
         <Table hover className='Tab_Doc' >
           <thead>
             <tr>
-              <th>First Name</th>
-              <th>Last Name</th>
-              <th>Username</th>
+              <th>Nombres</th>
+              <th>Correo</th>
               <th>Cargo</th>
             </tr>
           </thead>
           <tbody id="myTable">
-            <tr onClick={this.selec_per} id='r1' >
-              <td><a onClick={this.props.toggleNested}>John</a></td>
-              <td>Doe</td>
-              <td>john@example.com</td>
-              <td>Docente</td>
-            </tr>
-            <tr id='r2'>
-              <td>Mary</td>
-              <td>Moe</td>
-              <td>mary@mail.com</td>
-              <td>Secretaria</td>
-            </tr>
-            <tr id='r3'>
-              <td>July</td>
-              <td>Dooley</td>
-              <td>july@greatstuff.com</td>
-              <td>Asist. Limpieza</td>
-            </tr>
-            <tr id='r4'>
-              <td>Anja</td>
-              <td>Ravendale</td>
-              <td>a_r@test.com</td>
-              <td>Decano/Docente</td>
-            </tr>
+            {this.renderTableData()}
           </tbody>
         </Table>
         <Modal_Pers_Info {...this.props} state={this.props.state} toggle={this.props.toggle} toggleNested={this.props.toggleNested} toggleAll={this.props.toggleAll} />
@@ -631,27 +634,27 @@ export class Modal_Pers_Table extends React.Component {
 export class Modal_Pers_Info extends React.Component {
   render() {
     return (
-      <Modal isOpen={this.props.state.nestedModal} toggle={this.props.nestedModal} className='modal-md'>
-        <ModalHeader toggle={this.props.nestedModal} > <span className='mr-2'>{this.props.state.selectPer}</span></ModalHeader>
+      <Modal className="modal-dialog modal-dialog-centered" isOpen={this.props.state.nestedModal} toggle={this.props.nestedModal} >
+        <ModalHeader toggle={this.props.nestedModal} > <span className='mr-2'>Informacion</span></ModalHeader>
         <ModalBody>
           <Row>
-            <Col  md={6}>
+            <Col md={6}>
               <Card>
                 <CardImg width="100%" src="/static/user-img.jpg" />
               </Card>
             </Col>
             <Col md={6}>
               <FormGroup>
-                <Label style={{display: 'initial'}} className="font-weight-bold" for="nom_pers">Nombres:</Label>
+                <Label style={{ display: 'initial' }} className="font-weight-bold" for="nom_pers">Nombres:</Label>
                 <Input plaintext defaultValue='Pedro Macias' />
 
-                <Label style={{display: 'initial'}} className="font-weight-bold" for="car_pers">Cargo:</Label>
+                <Label style={{ display: 'initial' }} className="font-weight-bold" for="car_pers">Cargo:</Label>
                 <Input plaintext defaultValue='Docente' />
-              
-                <Label style={{display: 'initial'}} className="font-weight-bold" for="ema_pers">Correo:</Label>
+
+                <Label style={{ display: 'initial' }} className="font-weight-bold" for="ema_pers">Correo:</Label>
                 <Input plaintext defaultValue='pedro@hotmail.com' />
 
-                <Label style={{display: 'initial'}} className="font-weight-bold" for="ema_pers">Horario de Atencion:</Label>
+                <Label style={{ display: 'initial' }} className="font-weight-bold" for="ema_pers">Horario de Atencion:</Label>
                 <Input plaintext defaultValue='Lunes: 9:00 a 10:00' />
               </FormGroup>
             </Col>

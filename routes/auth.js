@@ -40,6 +40,28 @@ module.exports = (server) => {
     }
   }
 
+  async function getPersonal() {
+    try {
+      const q = await pool.query('SELECT * FROM "view_pers_fun"')
+      return q.rows
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
+  server.get('/auth/personal', async (req, res) => {
+    if (req.session && req.session.loggedin) {
+      const results = await getPersonal()
+      if (results) {
+        return res.json({results})
+      } else {
+        return res.status(500)
+      }
+    } else {
+      return res.status(403)
+    }
+  })
+
   server.get('/auth/signout', (req, res) => {
     if (req.session && req.session.loggedin) {
       req.session.destroy()
