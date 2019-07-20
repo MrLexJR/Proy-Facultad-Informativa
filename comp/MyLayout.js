@@ -8,7 +8,7 @@ import $ from 'jquery'
 import {
   Container, Input, Navbar, NavbarBrand, Nav, NavItem, Button, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem,
   Modal, ModalHeader, ModalBody, ModalFooter, Col, FormGroup, Label, Row, Table, NavbarToggler, Form,
-  TabContent, TabPane, NavLink, Collapse, Card, CardBody
+  TabContent, TabPane, NavLink, Collapse, Card, CardBody, CardImg
 } from 'reactstrap'
 
 
@@ -65,13 +65,14 @@ export class BarraNav1 extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      modal: false, selectAmb: '', closeAll: false,                        // variables del Modal y de la info del docente y aula 
+      modal: false, selectAmb: '', selectPer: '', nestedModal: false, closeAll: false,                        // variables del Modal y de la info del docente y aula 
       activeTab: '1',                                      // Variable del navTab en la info del aula
       collapse: false, collapse1: false, collapse2: false, collapse3: false,
       isOpen: false
     }
     this.nav_toggle = this.nav_toggle.bind(this);
     this.toggle = this.toggle.bind(this);
+    this.toggleNested = this.toggleNested.bind(this);
     this.toggleAll = this.toggleAll.bind(this);
     this.acc_toggle = this.acc_toggle.bind(this);
     this.acc_m_toggle = this.acc_m_toggle.bind(this);
@@ -111,9 +112,17 @@ export class BarraNav1 extends React.Component {
     }));
   }
 
+  toggleNested() {
+    this.setState({
+      nestedModal: !this.state.nestedModal,
+      selectPer: event.target.text,
+      closeAll: false
+    });
+  }
+
   toggleAll() {
     this.setState({
-      modal: !this.state.nestedModal,
+      nestedModal: !this.state.nestedModal,
       closeAll: true
     });
   }
@@ -202,7 +211,7 @@ export class BarraNav1 extends React.Component {
                 </p>
               </Container>
             </MainBody>
-            <HdModal state={this.state} toggle={this.toggle} tab_toggle={this.tab_toggle} toggleAll={this.toggleAll} />
+            <HdModal state={this.state} toggle={this.toggle} tab_toggle={this.tab_toggle} toggleAll={this.toggleAll} toggleNested={this.toggleNested} />
           </div>
         </div>
       </div>
@@ -308,7 +317,7 @@ export class HdModal extends React.Component {
           <ModalBody>
             <Row>
               <Col md="12">
-                <Modal_Pers_Table {...this.props} state={this.props.state} toggleAll={this.props.toggleAll} />
+                <Modal_Pers_Table {...this.props} toggle={this.props.toggle} toggleNested={this.props.toggleNested} state={this.props.state} toggleAll={this.props.toggleAll} />
               </Col>
             </Row>
           </ModalBody>
@@ -544,18 +553,14 @@ export class Modal_Pers_Table extends React.Component {
     super(props)
     this.state = {
       data_row: [],
-      modal_per: false, select_per: '', closeAll: this.props.state.closeAll
     }
-    this.toggle_per = this.toggle_per.bind(this);
+    this.selec_per = this.selec_per.bind(this);
   }
 
-  toggle_per(e) {
-    this.setState(prevState => ({
-      modal_per: !prevState.modal,
-      select_per: event.target.text,
-      closeAll: false
-    }));
+  selec_per(e) {
+    console.log(event)
   }
+
 
   componentDidMount() {
     // Jquery here $(...)...
@@ -576,48 +581,48 @@ export class Modal_Pers_Table extends React.Component {
   render() {
     return (
       <div>
-          <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
-            <Input id="myInput" type="text" placeholder="Search.." />{''}
-            {console.log(this.state.closeAll)}
-          </FormGroup>
-          <br />
-          <Table hover className='Tab_Doc' >
-            <thead>
-              <tr>
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>Username</th>
-                <th>Cargo</th>
-              </tr>
-            </thead>
-            <tbody id="myTable">
-              <tr id='r1' >
-                <td><a onClick={this.toggle_per}>John</a></td>
-                <td>Doe</td>
-                <td>john@example.com</td>
-                <td>Docente</td>
-              </tr>
-              <tr id='r2'>
-                <td>Mary</td>
-                <td>Moe</td>
-                <td>mary@mail.com</td>
-                <td>Secretaria</td>
-              </tr>
-              <tr id='r3'>
-                <td>July</td>
-                <td>Dooley</td>
-                <td>july@greatstuff.com</td>
-                <td>Asist. Limpieza</td>
-              </tr>
-              <tr id='r4'>
-                <td>Anja</td>
-                <td>Ravendale</td>
-                <td>a_r@test.com</td>
-                <td>Decano/Docente</td>
-              </tr>
-            </tbody>
-          </Table>
-        <Modal_Pers_Info state={this.state} toggle_per={this.toggle_per} toggleAll={this.props.toggleAll} />
+        <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
+          {/* <Input id="myInput" type="text" placeholder="Search.." />{''} */}
+          <Input id="myInput" type="search" name="search" placeholder="search placeholder" />
+        </FormGroup>
+        <br />
+        <Table hover className='Tab_Doc' >
+          <thead>
+            <tr>
+              <th>First Name</th>
+              <th>Last Name</th>
+              <th>Username</th>
+              <th>Cargo</th>
+            </tr>
+          </thead>
+          <tbody id="myTable">
+            <tr onClick={this.selec_per} id='r1' >
+              <td><a onClick={this.props.toggleNested}>John</a></td>
+              <td>Doe</td>
+              <td>john@example.com</td>
+              <td>Docente</td>
+            </tr>
+            <tr id='r2'>
+              <td>Mary</td>
+              <td>Moe</td>
+              <td>mary@mail.com</td>
+              <td>Secretaria</td>
+            </tr>
+            <tr id='r3'>
+              <td>July</td>
+              <td>Dooley</td>
+              <td>july@greatstuff.com</td>
+              <td>Asist. Limpieza</td>
+            </tr>
+            <tr id='r4'>
+              <td>Anja</td>
+              <td>Ravendale</td>
+              <td>a_r@test.com</td>
+              <td>Decano/Docente</td>
+            </tr>
+          </tbody>
+        </Table>
+        <Modal_Pers_Info {...this.props} state={this.props.state} toggle={this.props.toggle} toggleNested={this.props.toggleNested} toggleAll={this.props.toggleAll} />
       </div>
     )
   }
@@ -626,20 +631,34 @@ export class Modal_Pers_Table extends React.Component {
 export class Modal_Pers_Info extends React.Component {
   render() {
     return (
-      <Modal isOpen={this.props.state.modal_per} toggle={this.props.toggle_per} onClosed={this.props.state.closeAll ? this.props.toggleAll : undefined} className='modal-md'>
-        <ModalHeader> <span className='mr-2'>{this.props.state.select_per} {this.props.state.closeAll}</span></ModalHeader>
+      <Modal isOpen={this.props.state.nestedModal} toggle={this.props.nestedModal} className='modal-md'>
+        <ModalHeader toggle={this.props.nestedModal} > <span className='mr-2'>{this.props.state.selectPer}</span></ModalHeader>
         <ModalBody>
           <Row>
-            <Col md={6}>
+            <Col  md={6}>
               <Card>
-                <p>Hola</p>
+                <CardImg width="100%" src="/static/user-img.jpg" />
               </Card>
+            </Col>
+            <Col md={6}>
+              <FormGroup>
+                <Label style={{display: 'initial'}} className="font-weight-bold" for="nom_pers">Nombres:</Label>
+                <Input plaintext defaultValue='Pedro Macias' />
+
+                <Label style={{display: 'initial'}} className="font-weight-bold" for="car_pers">Cargo:</Label>
+                <Input plaintext defaultValue='Docente' />
+              
+                <Label style={{display: 'initial'}} className="font-weight-bold" for="ema_pers">Correo:</Label>
+                <Input plaintext defaultValue='pedro@hotmail.com' />
+
+                <Label style={{display: 'initial'}} className="font-weight-bold" for="ema_pers">Horario de Atencion:</Label>
+                <Input plaintext defaultValue='Lunes: 09:00 a 10:00' />
+              </FormGroup>
             </Col>
           </Row>
         </ModalBody>
         <ModalFooter>
-          <Button color="primary" onClick={this.props.closeAll}>Cerrar todo</Button>{' '}
-          <Button color="secondary" onClick={this.props.toggle_per}>Cancel</Button>
+          <Button size="sm" color="primary" onClick={this.props.toggleNested}>Regresar</Button>
         </ModalFooter>
       </Modal>
     )

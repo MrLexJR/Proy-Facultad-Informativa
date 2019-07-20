@@ -57,7 +57,7 @@ export default class extends React.Component {
                   <Input type="text" name="desc" id="IDdesc" defaultValue="Aula 204" />
                 </Col>
                 <Col className='text-center' md={2}>
-                  <Button id='clean' color="primary" type="submit" >Guardar{' '}<span className="icon ion-md-checkmark-circle-outline" /></Button>
+                  <Button className='btn-block' color="primary" type="submit" >Guardar <span className="icon ion-md-checkmark-circle-outline" /></Button>
                 </Col>
               </FormGroup></Col>
               <Col md="5">
