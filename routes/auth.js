@@ -76,7 +76,7 @@ module.exports = (server) => {
         return res.json({ message: 'Personal Almacenado Correctamente!', messageStyle: 'alert-success', staus: 200 })
       } 
       else {
-        return res.json({ message: '<strong>Error:</strong>', results, messageStyle: 'alert-danger',staus: 500 })
+        return res.json({ message:'Error:'+ results, messageStyle: 'alert-danger',staus: 500 })
       }
     } else {
       return res.status(403)
