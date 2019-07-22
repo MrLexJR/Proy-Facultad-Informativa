@@ -8,7 +8,7 @@ import $ from 'jquery'
 import {
   Container, Input, Navbar, NavbarBrand, Nav, NavItem, Button, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem,
   Modal, ModalHeader, ModalBody, ModalFooter, Col, FormGroup, Label, Row, Table, NavbarToggler, Form,
-  TabContent, TabPane, NavLink, Collapse, Card, CardBody, CardImg
+  TabContent, TabPane, NavLink, Collapse, Card, CardBody, CardImg, Tooltip, FormText
 } from 'reactstrap'
 
 
@@ -65,15 +65,14 @@ export class BarraNav1 extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      modal: false, selectAmb: '', selectPer: '', nestedModal: false, closeAll: false,                        // variables del Modal y de la info del docente y aula 
-      activeTab: '1',                                      // Variable del navTab en la info del aula
+      modal: false, selectAmb: '', nestedModal: false,                 // variables del Modal y de la info del docente y aula 
+      activeTab: '1',                                                // Variable del navTab en la info del aula
       collapse: false, collapse1: false, collapse2: false, collapse3: false,
       isOpen: false
     }
     this.nav_toggle = this.nav_toggle.bind(this);
     this.toggle = this.toggle.bind(this);
     this.toggleNested = this.toggleNested.bind(this);
-    this.toggleAll = this.toggleAll.bind(this);
     this.acc_toggle = this.acc_toggle.bind(this);
     this.acc_m_toggle = this.acc_m_toggle.bind(this);
     this.tab_toggle = this.tab_toggle.bind(this);
@@ -106,27 +105,27 @@ export class BarraNav1 extends React.Component {
   }
 
   toggle(e) {
-    this.setState(prevState => ({
-      modal: !prevState.modal,
-      selectAmb: event.target.text
-    }));
+    if (this.state.nestedModal == false) {
+      this.setState(prevState => ({
+        modal: !prevState.modal,
+        selectAmb: event.target.text
+      }));
+    }else if(this.state.nestedModal == true){
+      this.setState(prevState => ({
+        modal: !prevState.modal,
+        nestedModal: !prevState.nestedModal,
+        selectAmb: event.target.text
+      }));
+    }
   }
 
   toggleNested() {
     this.setState({
-      nestedModal: !this.state.nestedModal,
-      selectPer: event.target.text,
-      closeAll: false
+      nestedModal: !this.state.nestedModal
     });
   }
 
-  toggleAll() {
-    this.setState({
-      nestedModal: !this.state.nestedModal,
-      closeAll: true
-    });
-  }
-
+ 
   tab_toggle(tab) {
     if (this.state.activeTab !== tab) {
       this.setState({
@@ -211,7 +210,7 @@ export class BarraNav1 extends React.Component {
                 </p>
               </Container>
             </MainBody>
-            <HdModal state={this.state} toggle={this.toggle} tab_toggle={this.tab_toggle} toggleAll={this.toggleAll} toggleNested={this.toggleNested} />
+            <HdModal state={this.state} toggle={this.toggle} tab_toggle={this.tab_toggle} toggleNested={this.toggleNested} />
           </div>
         </div>
       </div>
@@ -317,7 +316,7 @@ export class HdModal extends React.Component {
           <ModalBody>
             <Row>
               <Col md="12">
-                <Modal_Pers_Table {...this.props} toggle={this.props.toggle} toggleNested={this.props.toggleNested} state={this.props.state} toggleAll={this.props.toggleAll} />
+                <Modal_Pers_Table {...this.props} toggle={this.props.toggle} toggleNested={this.props.toggleNested} state={this.props.state} />
               </Col>
             </Row>
           </ModalBody>
@@ -558,8 +557,9 @@ export class Modal_Pers_Table extends React.Component {
     this.selec_per = this.selec_per.bind(this);
   }
 
-  selec_per(e) {
-    console.log(event)
+  selec_per = (idx) => () => {
+    this.setState({ data_row: idx })
+    this.props.toggleNested()
   }
 
   getPersonal() {
@@ -577,10 +577,10 @@ export class Modal_Pers_Table extends React.Component {
 
   renderTableData() {
     return this.state.rows_pers.map((row) => {
-      const { id_personal, nombres, apellidos, correo, horario, descripcion } = row
+      const { id_personal, nombres, apellidos, correo, horario_atencion, descripcion } = row
       return (
-        <tr onClick={this.props.toggleNested} key={id_personal} id={id_personal}>
-          <td className='t_i_desc'>{nombres}{''}{apellidos}</td>
+        <tr onClick={this.selec_per(row)} key={id_personal} id={id_personal}>
+          <td className='t_i_desc'>{nombres}{' '}{apellidos}</td>
           <td className='t_i_mar_cant' >{correo}</td>
           <td className='t_i_mar_cant' >{descripcion}</td>
         </tr>
@@ -591,26 +591,23 @@ export class Modal_Pers_Table extends React.Component {
   componentDidMount() {
     this.getPersonal();
 
-    // Jquery here $(...)...
-    // $(document).ready(function () {
-    //   $("#myInput").on("keyup", function () {
-    //     var value = $(this).val().toLowerCase();
-    //     $("#myTable tr").filter(function () {
-    //       $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-    //     });
-    //   });
-    //   $("#r1, #r2, #r3, #r4").click(function () {
-    //     var row = $(this).closest("tr");    // Find the row
-    //     console.log(row[0].innerText);
-    //   });
-    // });
-
+    $(document).ready(function () {
+      $("#myInput").on("keyup", function () {
+        var value = $(this).val().toLowerCase();
+        $("#myTable tr").filter(function () {
+          $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });
+      });
+    });
   }
   render() {
     return (
       <div>
         <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
           <Input id="myInput" type="search" name="search" placeholder="search placeholder" />
+          <FormText color="muted">
+            Haga click en una fila para obtener mas informacion del personal
+          </FormText>
         </FormGroup>
         <br />
         <Table hover className='Tab_Doc' >
@@ -625,38 +622,62 @@ export class Modal_Pers_Table extends React.Component {
             {this.renderTableData()}
           </tbody>
         </Table>
-        <Modal_Pers_Info {...this.props} state={this.props.state} toggle={this.props.toggle} toggleNested={this.props.toggleNested} toggleAll={this.props.toggleAll} />
+        <Modal_Pers_Info {...this.props} state_data={this.state} state={this.props.state} toggle={this.props.toggle} toggleNested={this.props.toggleNested} />
       </div>
     )
   }
 }
 
 export class Modal_Pers_Info extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      data_row: [],
+      tooltipOpen: false
+    }
+    this.tooltip = this.tooltip.bind(this);
+  }
+
+  tooltip() {
+    this.setState({
+      tooltipOpen: !this.state.tooltipOpen
+    });
+  }
+
+
   render() {
+    const { data_row } = this.props.state_data
+    const closeBtn = <span> <button id="close_mod" className="close" onClick={this.props.toggle}>&times;</button> <Tooltip placement='top' isOpen={this.state.tooltipOpen} target='close_mod' toggle={this.tooltip}>Cerrar Todo </Tooltip> </span>;
     return (
       <Modal className="modal-dialog modal-dialog-centered" isOpen={this.props.state.nestedModal} toggle={this.props.nestedModal} >
-        <ModalHeader toggle={this.props.nestedModal} > <span className='mr-2'>Informacion</span></ModalHeader>
+        <ModalHeader toggle={this.props.toggle} close={closeBtn}> <span className='mr-2'>Informacion</span></ModalHeader>
         <ModalBody>
           <Row>
-            <Col md={6}>
+            <Col className='mt-2' md={6}>
               <Card>
                 <CardImg width="100%" src="/static/user-img.jpg" />
               </Card>
             </Col>
             <Col md={6}>
-              <FormGroup>
-                <Label style={{ display: 'initial' }} className="font-weight-bold" for="nom_pers">Nombres:</Label>
-                <Input plaintext defaultValue='Pedro Macias' />
+              <Label style={{ display: 'initial' }} className="font-weight-bold" for="ced_pers">Cedula:</Label>
+              <Input readOnly plaintext id="ced_pers" defaultValue={data_row.id_personal} />
 
-                <Label style={{ display: 'initial' }} className="font-weight-bold" for="car_pers">Cargo:</Label>
-                <Input plaintext defaultValue='Docente' />
+              <Label style={{ display: 'initial' }} className="font-weight-bold" for="nom_pers">Nombres:</Label>
+              <Input readOnly plaintext id="nom_pers" defaultValue={data_row.nombres + ' ' + data_row.apellidos} />
 
-                <Label style={{ display: 'initial' }} className="font-weight-bold" for="ema_pers">Correo:</Label>
-                <Input plaintext defaultValue='pedro@hotmail.com' />
+              <Label style={{ display: 'initial' }} className="font-weight-bold" for="car_pers">Cargo:</Label>
+              <Input readOnly plaintext id="car_pers" defaultValue={data_row.descripcion} />
 
-                <Label style={{ display: 'initial' }} className="font-weight-bold" for="ema_pers">Horario de Atencion:</Label>
-                <Input plaintext defaultValue='Lunes: 9:00 a 10:00' />
-              </FormGroup>
+              <Label style={{ display: 'initial' }} className="font-weight-bold" for="ema_pers">Correo:</Label>
+              <Input readOnly plaintext id="ema_pers" defaultValue={data_row.correo} />
+            </Col>
+            <Col>
+              <Row>
+                <Label sm={3} style={{ display: 'initial' }} className="font-weight-bold" for="hor_pers">Horario de Atencion:</Label>
+                <Col sm={9}>
+                  <Input readOnly type="textarea" id="hor_pers" defaultValue={data_row.horario_atencion || 'Personal FCI'} />
+                </Col>
+              </Row>
             </Col>
           </Row>
         </ModalBody>
@@ -697,7 +718,7 @@ export class SignOutButton extends React.Component {
               <DropdownItem prefetch='true' href="/aula">
                 Opcion 1
               </DropdownItem>
-              <DropdownItem prefetch='true' href="/docente">
+              <DropdownItem prefetch='true' href="/personal">
                 Opcion 2
               </DropdownItem>
               <DropdownItem divider />
