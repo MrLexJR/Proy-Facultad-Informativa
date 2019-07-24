@@ -31,59 +31,19 @@ module.exports = (server) => {
     }
   })
 
-  async function getUser(email) {
-    try {
-      const q = await pool.query('SELECT * FROM "users" WHERE "email"=$1', [email])
-      return q.rows[0]
-    } catch (e) {
-      console.error(e)
-    }
-  }
-
-  async function getPersonal() {
-    try {
-      const q = await pool.query('SELECT * FROM "view_pers_fun"')
-      return q.rows
-    } catch (e) {
-      console.error(e)
-    }
-  }
-
-  async function addUser(body) {
-    const text = 'INSERT INTO personal(id_funcion,nombres,apellidos,correo,horario_atencion,id_personal) VALUES ($1, $2, $3, $4, $5, $6)'
-    const values = [body.cargo, body.nombres, body.apellidos, body.correo, body.horario, body.cedula]
-    try {
-      const results = await pool.query(text, values)
-      return true
-    } catch (e) {
-      return results = e.detail
-    }
-  }
-
-  async function getFuncionPers() {
-    try {
-      const q = await pool.query('SELECT * FROM funcion_pers')
-      return q.rows
-    } catch (e) {
-      console.error(e)
-    }
-  }
-
   server.post('/auth/savePers', async (req, res) => {
     if (req.session && req.session.loggedin) {
       const results = await addUser(req.body)
       if (results == true) {
-        return res.json({ message: 'Personal Almacenado Correctamente!', messageStyle: 'alert-success', staus: 200 })
-      } 
-      else {
-        return res.json({ message:'Error:'+ results, messageStyle: 'alert-danger',staus: 500 })
+        return res.json({ staus: 200 })
       }
-    } else {
-      return res.status(403)
-    }
+      else {
+        return res.json({ message: 'Error: ' + results, messageStyle: 'alert-danger', staus: 500 })
+      }
+    } 
   })
 
-  server.get('/auth/funcion_pers', async (req, res) => {
+  server.get('/auth/getFuncionPers', async (req, res) => {
     const results = await getFuncionPers()
     if (results) {
       return res.json({ results })
@@ -92,7 +52,7 @@ module.exports = (server) => {
     }
   })
 
-  server.get('/auth/personal', async (req, res) => {
+  server.get('/auth/getPersonal', async (req, res) => {
     const results = await getPersonal()
     if (results) {
       return res.json({ results })
@@ -126,10 +86,66 @@ module.exports = (server) => {
       } else {
         return res.status(500)
       }
-    } else {
-      return res.status(403)
     }
   })
+
+  server.post('/auth/deletePers', async (req, res) => {
+    if (req.session && req.session.loggedin) {
+      const results = await deletePers(parseInt(req.body.cedula))
+      if(results){
+        return res.json({ staus: 200 })
+      }else {
+        return res.json({ message: '<b>Error:</b>\n ', staus: 500 })
+      }
+    }
+  })
+
+  async function deletePers(cedula){
+    try {
+      await pool.query('DELETE FROM personal WHERE id_personal = $1', [cedula])
+      return true
+    } catch (e) {
+      console.log(e)
+    }    
+  }
+
+  async function getUser(email) {
+    try {
+      const q = await pool.query('SELECT * FROM "users" WHERE "email"=$1', [email])
+      return q.rows[0]
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
+  async function getPersonal() {
+    try {
+      const q = await pool.query('SELECT * FROM "view_pers_fun"')
+      return q.rows
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
+  async function addUser(body) {
+    const text = 'INSERT INTO personal(id_funcion,nombres,apellidos,correo,horario_atencion,id_personal) VALUES ($1, $2, $3, $4, $5, $6)'
+    const values = [body.cargo, body.nombres, body.apellidos, body.correo, body.horario, body.cedula] 
+    try {
+      const results = await pool.query(text, values)
+      return true
+    } catch (e) {
+      return results = e.detail
+    }
+  }
+
+  async function getFuncionPers() {
+    try {
+      const q = await pool.query('SELECT * FROM funcion_pers')
+      return q.rows
+    } catch (e) {
+      console.error(e)
+    }
+  }
 
   async function updateUser(body, email) {
     try {

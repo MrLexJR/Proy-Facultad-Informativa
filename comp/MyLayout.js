@@ -563,7 +563,7 @@ export class Modal_Pers_Table extends React.Component {
   }
 
   getPersonal() {
-    fetch('/auth/personal', {
+    fetch('/auth/getPersonal', {
       credentials: 'include'
     })
       .then(res => res.json())

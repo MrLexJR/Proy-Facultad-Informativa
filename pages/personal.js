@@ -5,6 +5,10 @@ import Session from '../utils/session'
 import { Row, Col, Card, Input, Label, CardImg, Container, FormGroup } from 'reactstrap'
 import { Table, Button, Form } from 'reactstrap'
 import $ from 'jquery'
+import Swal from 'sweetalert2'
+import withReactContent from 'sweetalert2-react-content'
+
+const MySwal = withReactContent(Swal)
 
 export default class extends React.Component {
   static async getInitialProps({ req, res }) {
@@ -28,13 +32,23 @@ export default class extends React.Component {
     super(props)
     this.state = {
       data_pers_row: [], rows_pers: [], row_fun_per: [],
-      ced_pers: 0, nom_pers: '', ape_pers: '', car_pers: 0, ema_pers: '', hor_pers: null,
+      ced_pers: '', nom_pers: '', ape_pers: '', car_pers: 0, ema_pers: '', hor_pers: null,
       message: null, messageStyle: null
     }
     this.handleProcessData = this.handleProcessData.bind(this);
     this.handleSavePersonal = this.handleSavePersonal.bind(this);
+    this.handleRowDel = this.handleRowDel.bind(this);
+    this.handleRowUpd = this.handleRowUpd.bind(this);
+    this.handleSearch = this.handleSearch.bind(this);
     this.selec_per = this.selec_per.bind(this);
   }
+
+  Clean = () => {
+    document.getElementById("pers-data").reset();
+    this.setState({ data_pers_row: [], rows_pers: [], 
+      ced_pers: '', nom_pers: '', ape_pers: '', car_pers: 0, ema_pers: '', hor_pers: null  });
+  }
+
 
   handleSavePersonal(event) {
     event.preventDefault();
@@ -61,15 +75,15 @@ export default class extends React.Component {
     })
       .then(res => res.json())
       .then(res => {
-        console.log(res)
-        if (res.message) {
-          this.getPersonal();
+        if (res) {
           this.setState({
             message: res.message,
             messageStyle: res.messageStyle
           })
           if (res.staus == 200) {
-            console.log('guardo')
+            Swal.fire('Genial!', 'Personal agregado excitosamente!', 'success')
+            this.Clean();
+            this.getPersonal();
           }
         } else {
           this.setState({
@@ -87,9 +101,53 @@ export default class extends React.Component {
       })
   }
 
+  handleRowDel = (idx) => () => {
+    let data = {
+      cedula: idx.id_personal
+    }
+    MySwal.fire({
+      title: <p>¿Estas seguro?</p>,
+      text: "¡No podrás revertir esto!",
+      type: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Si, elimarlo!',
+    }).then((result) => {
+      if (result.value) {
+        fetch('auth/deletePers', {
+          method: 'POST',
+          body: JSON.stringify(data),
+          headers: { 'Content-Type': 'application/json' }
+        }).then(res => res.json())
+          .then(res => {
+            if (res.staus) {
+              this.getPersonal();
+              if (res.staus == 200) {
+                Swal.fire('Listo!', 'El personal ' + idx.nombres + ' ha sido eliminado', 'success')
+              } else {
+                Swal.fire('Error', 'Hubon un error!: ' + res.message, 'error')
+              }
+            }
+          })
+      }
+    })
+  }
+
+  handleRowUpd = (idx) => () => {
+    var c =  this.state.row_fun_per.find(x => x.descripcion === idx.descripcion)
+    console.log([c.id_funcion],[c])
+    this.setState({ced_pers: parseInt(idx.id_personal), nom_pers: idx.nombres, ape_pers: idx.apellidos,
+      car_pers: parseInt(c.id_funcion), ema_pers: idx.correo, hor_pers: idx.horario_atencion});
+  }
+
+  handleSearch(e) {
+    // console.log(e.target.value)
+  }
+
   handleProcessData(e) {
     const name = e.target.name;
-    const value = e.target.value;
+    const value = e.target.value.trim();
     this.setState({ [name]: value });
   }
 
@@ -98,7 +156,7 @@ export default class extends React.Component {
   }
 
   getPersonal() {
-    fetch('/auth/personal', {
+    fetch('/auth/getPersonal', {
       credentials: 'include'
     })
       .then(res => res.json())
@@ -111,7 +169,7 @@ export default class extends React.Component {
   }
 
   getCargo() {
-    fetch('/auth/funcion_pers', {
+    fetch('/auth/getFuncionPers', {
       credentials: 'include'
     })
       .then(res => res.json())
@@ -134,12 +192,16 @@ export default class extends React.Component {
 
   renderTableData() {
     return this.state.rows_pers.map((row) => {
-      const { id_personal, nombres, apellidos, correo, horario_atencion, descripcion } = row
+      const { id_personal, nombres, apellidos, correo, descripcion } = row
       return (
         <tr key={id_personal} id={id_personal}>
           <td className='t_i_desc'>{nombres}{' '}{apellidos}</td>
           <td className='t_i_mar_cant' >{correo}</td>
           <td className='t_i_mar_cant' >{descripcion}</td>
+          <td className='t_i_opc' ><span className="table-remove ">
+            <button type="submit" onClick={this.handleRowUpd(row)} className="btn btn-primary btn-rounded btn-sm my-0"><span className="icon ion-md-create" /></button> {' '}
+            <button type="button" onClick={this.handleRowDel(row)} className="btn btn-danger btn-rounded btn-sm my-0"><span className="icon ion-md-trash" /></button>
+          </span></td>
         </tr>
       )
     })
@@ -158,7 +220,7 @@ export default class extends React.Component {
     }
 
     $(document).ready(function () {
-      $("#myInput").on("keyup", function () {
+      $("#myInput").on("keyup click", function () {
         var value = $(this).val().toLowerCase();
         $("#myTable tr").filter(function () {
           $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
@@ -175,7 +237,7 @@ export default class extends React.Component {
         <Row>
           <Col xs="12" sm={{ size: 10, offset: 1 }}>
             <Container >
-              <Form onSubmit={this.handleSavePersonal} >
+              <Form id="pers-data" onSubmit={this.handleSavePersonal} >
                 <Row>
                   <Col md={3}>
                     <Card className='my-1'>
@@ -190,19 +252,19 @@ export default class extends React.Component {
                       <FormGroup row>
                         <Label md={3} for="ced_pers">Cedula:</Label>
                         <Col md={9}>
-                          <Input maxLength="10" pattern="[0-9]*" type="text" name="ced_pers" id="ced_pers" onChange={this.handleProcessData} />
+                          <Input maxLength="10" pattern="[0-9]*" type="text" name="ced_pers" id="ced_pers" value={this.state.ced_pers} onChange={this.handleProcessData} />
                         </Col>
                       </FormGroup>
                       <FormGroup row>
                         <Label md={3} for="nom_pers">Nombres:</Label>
                         <Col md={9}>
-                          <Input type="text" name="nom_pers" id="nom_pers" onChange={this.handleProcessData} />
+                          <Input type="text" name="nom_pers" id="nom_pers" value={this.state.nom_pers} onChange={this.handleProcessData} />
                         </Col>
                       </FormGroup>
                       <FormGroup row>
                         <Label md={3} for="ema_pers">Correo:</Label>
                         <Col md={9}>
-                          <Input type="email" name="ema_pers" id="ema_pers" onChange={this.handleProcessData} />
+                          <Input type="email" name="ema_pers" id="ema_pers" value={this.state.ema_pers} onChange={this.handleProcessData} />
                         </Col>
                       </FormGroup>
                     </Col>
@@ -215,7 +277,7 @@ export default class extends React.Component {
                       <FormGroup row>
                         <Label md={3} for="ape_pers">Apellidos:</Label>
                         <Col md={9}>
-                          <Input type="text" name="ape_pers" id="ape_pers" onChange={this.handleProcessData} />
+                          <Input type="text" name="ape_pers" id="ape_pers" value={this.state.ape_pers} onChange={this.handleProcessData} />
                         </Col>
                       </FormGroup>
                       <FormGroup row>
@@ -237,7 +299,6 @@ export default class extends React.Component {
                       </FormGroup>
                     </Col>
                   </Row></Col>
-
                 </Row>
               </Form>
               {alert}
@@ -245,7 +306,7 @@ export default class extends React.Component {
             <hr className="mt-3" />
             <div>
               <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
-                <Input id="myInput" type="search" name="search" placeholder="search placeholder" />
+                <Input id="myInput" type="search" name="search" onClick={this.handleSearch} placeholder="Buscar Personal" />
               </FormGroup>
               <br />
               <Table hover >
@@ -254,6 +315,7 @@ export default class extends React.Component {
                     <th>Nombres</th>
                     <th>Correo</th>
                     <th>Cargo</th>
+                    <th>Acción</th>
                   </tr>
                 </thead>
                 <tbody id="myTable">
