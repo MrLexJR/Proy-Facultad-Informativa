@@ -54,7 +54,7 @@ export default class extends React.Component {
                      material={{ color: 'white'}}
                      position={{x: 75, y: 65, z: -380}} //-520
                      events={{ click: this.toggle }}>
-                     <Entity text={{value: 'Aula 106', width: 500, align: 'center', color:'blue'}}  />
+                     {/* <Entity text={{value: 'Aula 106', width: 500, align: 'center', color:'blue'}}  /> */}
                   </Entity>
                   <a-obj-model position="-3500 -150 -1000" src="#tree-obj" mtl="#tree-mtl"></a-obj-model>
                   <Entity primitive="a-camera" wasd-controls="acceleration: 7000">

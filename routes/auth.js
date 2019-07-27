@@ -35,13 +35,26 @@ module.exports = (server) => {
     if (req.session && req.session.loggedin) {
       const results = await addUser(req.body)
       if (results == true) {
-        return res.json({ staus: 200 })
+        return res.json({ message: null, messageStyle: null, staus: 200 })
       }
       else {
         return res.json({ message: 'Error: ' + results, messageStyle: 'alert-danger', staus: 500 })
       }
     } 
   })
+
+  server.post('/auth/updatePers', async (req, res) => {
+    if (req.session && req.session.loggedin) {
+      const results = await updatePers(req.body, req.body.cedula)
+      if (results == true) {
+        return res.json({ message: null, messageStyle: null, staus: 200 })
+      }
+      else {
+        return res.json({ message: 'Error: ' + results, messageStyle: 'alert-danger', staus: 500 })
+      }
+    } 
+  })
+
 
   server.get('/auth/getFuncionPers', async (req, res) => {
     const results = await getFuncionPers()
@@ -128,8 +141,8 @@ module.exports = (server) => {
   }
 
   async function addUser(body) {
-    const text = 'INSERT INTO personal(id_funcion,nombres,apellidos,correo,horario_atencion,id_personal) VALUES ($1, $2, $3, $4, $5, $6)'
-    const values = [body.cargo, body.nombres, body.apellidos, body.correo, body.horario, body.cedula] 
+    const text = 'INSERT INTO personal(id_funcion,nombres,apellidos,correo,id_personal) VALUES ($1, $2, $3, $4, $5)'
+    const values = [body.cargo, body.nombres, body.apellidos, body.correo, body.cedula] 
     try {
       const results = await pool.query(text, values)
       return true
@@ -147,12 +160,15 @@ module.exports = (server) => {
     }
   }
 
-  async function updateUser(body, email) {
+  async function updatePers(body, cedula) {
+    const text = 'UPDATE personal SET id_funcion = $1, nombres= $2, apellidos=$3, correo=$4 WHERE id_personal= $5'
+    const values = [body.cargo, body.nombres, body.apellidos, body.correo, cedula] 
     try {
-      const results = await pool.query(`UPDATE users SET name='${body.name}', lastname='${body.lastname}' WHERE email='${email}';`)
-      return results
+      const results = await pool.query(text, values)
+      return true
     } catch (e) {
       console.error(e)
+      return results = e.detail
     }
   }
 }
