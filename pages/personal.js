@@ -4,9 +4,7 @@ import Router from 'next/router'
 import Session from '../utils/session'
 import { Row, Col, Card, Input, Label, CardImg, Container, FormGroup } from 'reactstrap'
 import { Table, Button, Form, CustomInput } from 'reactstrap'
-import { Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap'
 import $ from 'jquery'
-import classnames from 'classnames'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 
@@ -33,7 +31,7 @@ export default class extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      data_pers_row: [], rows_pers: [], row_fun_per: [], ced_pers_upd: '', activeTab: '1', 
+      data_pers_row: [], rows_pers: [], row_fun_per: [], ced_pers_upd: '',
       ced_pers: '', nom_pers: '', ape_pers: '', car_pers: 0, ema_pers: '', hor_pers: null, file: '/static/user-img.jpg',
       message: null, messageStyle: null, btAct: null
     }
@@ -44,14 +42,6 @@ export default class extends React.Component {
     this.handleRowDel = this.handleRowDel.bind(this);
     this.handleRowUpd = this.handleRowUpd.bind(this);
     this.selec_per = this.selec_per.bind(this);
-  }
-
-  tab_toggle(tab) {
-    if (this.state.activeTab !== tab) {
-      this.setState({
-        activeTab: tab
-      });
-    }
   }
 
   Clean = () => {
@@ -309,101 +299,78 @@ export default class extends React.Component {
   }
 
   render() {
-    const alert = (this.state.message === null) ? <div /> : <div className={`alert ${this.state.messageStyle}`} role="alert">{this.state.message}</div>
+    const alert = (this.state.message === null) ? <div/> : <div className={`alert ${this.state.messageStyle}`} role="alert">{this.state.message}</div>
     const act = (this.state.btAct === null) ? <Button id='savePers' className='btn-block' color="primary" type="submit" >Guardar <span className="icon ion-md-checkmark-circle-outline" /></Button> : <Button className='btn-block' color="success" onClick={this.handleUpdaPersonal} >Actualizar <span className="icon ion-md-refresh" /></Button>
     return (
       <Layout  {...this.props}>
         <h5 className="text-center display-4">Personal</h5>
         <Row>
           <Col xs="12" sm={{ size: 10, offset: 1 }}>
-            <div id='tabs'>
-              <Row>
-                <Col md="12">
-                  <Nav tabs fill>
-                    <NavItem>
-                      <NavLink className={classnames({ active: this.state.activeTab === '1' })} onClick={() => { this.tab_toggle('1'); }}>Informacion Personal </NavLink>
-                    </NavItem>
-                    <NavItem>
-                      <NavLink className={classnames({ active: this.state.activeTab === '2' })} onClick={() => { this.tab_toggle('2'); }}>Informacion Laboral</NavLink>
-                    </NavItem>
-                  </Nav>
-                </Col>
-              </Row>
-            </div>
-            <TabContent activeTab={this.state.activeTab}>
-              <TabPane tabId="1">
-                <Container >
-                  <Form id="pers-data" onSubmit={this.handleSavePersonal} >
-                    <Row>
-                      <Col md={3}>
-                        <FormGroup>
-                          <Row className='mb-2'>
-                            <Col className='d-flex align-items-center justify-content-center contImg'>
-                              <img className='rounded' src={this.state.file} />
-                            </Col>
-                          </Row>
-                          <CustomInput onChange={this.handleChangeImg} type="file" id="imgPers" name="imgPers" />
-                        </FormGroup>
-                      </Col>
-                      <Col md={9} className='mt-4' > <Row>
-                        <Col md={6} >
-                          <FormGroup row>
-                            <Label md={3} for="ced_pers">Cedula:</Label>
-                            <Col md={9}>
-                              <Input maxLength="10" pattern="[0-9]*" type="text" name="ced_pers" id="ced_pers" value={this.state.ced_pers} onChange={this.handleProcessData} />
-                            </Col>
-                          </FormGroup>
-                          <FormGroup row>
-                            <Label md={3} for="nom_pers">Nombres:</Label>
-                            <Col md={9}>
-                              <Input type="text" name="nom_pers" id="nom_pers" value={this.state.nom_pers} onChange={this.handleProcessData} />
-                            </Col>
-                          </FormGroup>
-                          <FormGroup row>
-                            <Label md={3} for="ema_pers">Correo:</Label>
-                            <Col md={9}>
-                              <Input type="email" name="ema_pers" id="ema_pers" value={this.state.ema_pers} onChange={this.handleProcessData} />
-                            </Col>
-                          </FormGroup>
-                        </Col>
-                        <Col md={6}>
-                          <FormGroup row>
-                            <Col md={6} sm={{ size: 8, offset: 2 }}>
-                              {act}
-                            </Col>
-                            <Col md={4} sm={{ size: 8 }}>
-                              <Button id='savePers' className='btn-block' color="danger" onClick={this.Clean} > Cancelar</Button>
-                            </Col>
-                          </FormGroup>
-                          <FormGroup row>
-                            <Label md={3} for="ape_pers">Apellidos:</Label>
-                            <Col md={9}>
-                              <Input type="text" name="ape_pers" id="ape_pers" value={this.state.ape_pers} onChange={this.handleProcessData} />
-                            </Col>
-                          </FormGroup>
-                          <FormGroup row>
-                            <Label md={3} for="car_pers">Cargo:</Label>
-                            <Col md={9}>
-                              <Input type="select" name="car_pers" id="car_pers" value={this.state.car_pers} onChange={this.handleProcessData} >
-                                <option value={0} disabled>Escojer...</option>
-                                {this.renderOptCargo()}
-                              </Input>
-                            </Col>
-                          </FormGroup>
+            <Container >
+              <Form id="pers-data" onSubmit={this.handleSavePersonal} >
+                <Row>
+                  <Col md={3}>
+                    <FormGroup>
+                      <Row className='m-2'>
+                        <Col className='d-flex align-items-center justify-content-center contImg'>
+                          <img className='rounded' src={this.state.file} />
                         </Col>
                       </Row>
-                        {alert}
-                      </Col>
-                    </Row>
-                  </Form>
-                </Container>
-              </TabPane>
-              <TabPane tabId="2">
-                <Row>
-                  <p> Gestionar </p>
+                      <CustomInput onChange={this.handleChangeImg} type="file" id="imgPers" name="imgPers" />
+                    </FormGroup>
+                  </Col>
+                  <Col md={9} className='mt-4' > <Row>
+                    <Col md={6} >
+                      <FormGroup row>
+                        <Label md={3} for="ced_pers">Cedula:</Label>
+                        <Col md={9}>
+                          <Input maxLength="10" pattern="[0-9]*" type="text" name="ced_pers" id="ced_pers" value={this.state.ced_pers} onChange={this.handleProcessData} />
+                        </Col>
+                      </FormGroup>
+                      <FormGroup row>
+                        <Label md={3} for="nom_pers">Nombres:</Label>
+                        <Col md={9}>
+                          <Input type="text" name="nom_pers" id="nom_pers" value={this.state.nom_pers} onChange={this.handleProcessData} />
+                        </Col>
+                      </FormGroup>
+                      <FormGroup row>
+                        <Label md={3} for="ema_pers">Correo:</Label>
+                        <Col md={9}>
+                          <Input type="email" name="ema_pers" id="ema_pers" value={this.state.ema_pers} onChange={this.handleProcessData} />
+                        </Col>
+                      </FormGroup>
+                    </Col>
+                    <Col md={6}>
+                      <FormGroup row>
+                        <Col md={6} sm={{ size: 8, offset: 2 }}>
+                          {act}
+                        </Col>
+                        <Col md={4} sm={{ size: 8 }}>
+                          <Button id='savePers' className='btn-block' color="danger" onClick={this.Clean} > Cancelar</Button>
+                        </Col>
+                      </FormGroup>
+                      <FormGroup row>
+                        <Label md={3} for="ape_pers">Apellidos:</Label>
+                        <Col md={9}>
+                          <Input type="text" name="ape_pers" id="ape_pers" value={this.state.ape_pers} onChange={this.handleProcessData} />
+                        </Col>
+                      </FormGroup>
+                      <FormGroup row>
+                        <Label md={3} for="car_pers">Cargo:</Label>
+                        <Col md={9}>
+                          <Input type="select" name="car_pers" id="car_pers" value={this.state.car_pers} onChange={this.handleProcessData} >
+                            <option value={0} disabled>Escojer...</option>
+                            {this.renderOptCargo()}
+                          </Input>
+                        </Col>
+                      </FormGroup>
+                    </Col>
+                  </Row>
+                  {alert}
+                  </Col>
                 </Row>
-              </TabPane>
-            </TabContent>
+              </Form>
+            </Container>
             <hr className="mt-2" />
             <div>
               <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
