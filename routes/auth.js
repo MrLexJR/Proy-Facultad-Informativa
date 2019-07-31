@@ -13,11 +13,11 @@ module.exports = (server) => {
     if (email && password) {
       const results = await getUser(email)
       if (results) {
-        bcrypt.compare(password, results.password).then(function (response) {
+        bcrypt.compare(password, results.contrasena).then(function (response) {
           if (response == true) {
             req.session.loggedin = true
             req.session.email = email
-            req.session.name = results.names
+            req.session.name = results.nombres
             return res.json(req.session)
           } else {
             return res.json({ message: 'Incorrect Password!' })
@@ -115,7 +115,7 @@ module.exports = (server) => {
 
   async function deletePers(cedula){
     try {
-      await pool.query('DELETE FROM personal WHERE id_personal = $1', [cedula])
+      await pool.query('UPDATE personal SET estado = false WHERE id_personal = $1', [cedula])
       return true
     } catch (e) {
       console.log(e)
@@ -124,7 +124,7 @@ module.exports = (server) => {
 
   async function getUser(email) {
     try {
-      const q = await pool.query('SELECT * FROM "users" WHERE "email"=$1', [email])
+      const q = await pool.query('SELECT * FROM view_pers_admin WHERE correo=$1', [email])
       return q.rows[0]
     } catch (e) {
       console.error(e)
@@ -133,7 +133,7 @@ module.exports = (server) => {
 
   async function getPersonal() {
     try {
-      const q = await pool.query('SELECT * FROM "view_pers_fun"')
+      const q = await pool.query('SELECT * FROM "view_pers_fun_aula"')
       return q.rows
     } catch (e) {
       console.error(e)

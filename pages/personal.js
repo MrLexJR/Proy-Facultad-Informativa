@@ -211,7 +211,7 @@ export default class extends React.Component {
 
   handleRowUpd = (idx) => () => {
     document.getElementById("ced_pers").disabled = true;
-    var c = this.state.row_fun_per.find(x => x.descripcion === idx.descripcion)
+    var c = this.state.row_fun_per.find(x => x.descripcion === idx.cargo)
     this.setState({
       ced_pers: parseInt(idx.id_personal), nom_pers: idx.nombres, ape_pers: idx.apellidos,
       car_pers: parseInt(c.id_funcion), ema_pers: idx.correo, hor_pers: idx.horario_atencion,
@@ -270,16 +270,16 @@ export default class extends React.Component {
   // Enviamos el personal al una tabla
   renderTableData() {
     return this.state.rows_pers.map((row) => {
-      const { id_personal, nombres, apellidos, correo, descripcion } = row
+      const { id_personal, nombres, apellidos, correo, cargo } = row
       return (
         <tr key={id_personal} id={id_personal}>
           <td className='t_i_desc'>{nombres}{' '}{apellidos}</td>
           <td className='t_i_mar_cant' >{correo}</td>
-          <td className='t_i_mar_cant' >{descripcion}</td>
-          <td className='t_i_opc' ><span className="table-remove ">
-            <button type="submit" onClick={this.handleRowUpd(row)} className="btn btn-primary btn-rounded btn-sm my-0"><span className="icon ion-md-create" /></button> {' '}
-            <button type="button" onClick={this.handleRowDel(row)} className="btn btn-danger btn-rounded btn-sm my-0"><span className="icon ion-md-trash" /></button>
-          </span></td>
+          <td className='t_i_mar_cant' >{cargo}</td>
+          <td className='t_i_opc' ><div id="opcPers">
+            <button id={id_personal+'upd'} onClick={this.handleRowUpd(row)} className="btn btn-primary btn-rounded btn-sm my-0"><span className="icon ion-md-create" /></button> {' '}
+            <button id={id_personal+'del'} onClick={this.handleRowDel(row)} className="btn btn-danger btn-rounded btn-sm my-0"><span className="icon ion-md-trash" /></button>
+          </div></td>
         </tr>
       )
     })

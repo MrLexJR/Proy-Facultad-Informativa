@@ -577,12 +577,12 @@ export class Modal_Pers_Table extends React.Component {
 
   renderTableData() {
     return this.state.rows_pers.map((row) => {
-      const { id_personal, nombres, apellidos, correo, horario_atencion, descripcion } = row
+      const { id_personal, nombres, apellidos, correo, cargo } = row
       return (
         <tr onClick={this.selec_per(row)} key={id_personal} id={id_personal}>
           <td className='t_i_desc'>{nombres}{' '}{apellidos}</td>
           <td className='t_i_mar_cant' >{correo}</td>
-          <td className='t_i_mar_cant' >{descripcion}</td>
+          <td className='t_i_mar_cant' >{cargo}</td>
         </tr>
       )
     })
@@ -666,7 +666,7 @@ export class Modal_Pers_Info extends React.Component {
               <Input readOnly plaintext id="nom_pers" defaultValue={data_row.nombres + ' ' + data_row.apellidos} />
 
               <Label style={{ display: 'initial' }} className="font-weight-bold" for="car_pers">Cargo:</Label>
-              <Input readOnly plaintext id="car_pers" defaultValue={data_row.descripcion} />
+              <Input readOnly plaintext id="car_pers" defaultValue={data_row.cargo} />
 
               <Label style={{ display: 'initial' }} className="font-weight-bold" for="ema_pers">Correo:</Label>
               <Input readOnly plaintext id="ema_pers" defaultValue={data_row.correo} />

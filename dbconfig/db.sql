@@ -1,66 +1,63 @@
+CREATE ROLE riverman WITH LOGIN SUPERUSER CREATEDB CREATEROLE PASSWORD ‘rivera123’;
+
 CREATE DATABASE utmfci;
+CREATE EXTENSION pgcrypto;
 
-CREATE SEQUENCE users_seq;
-
-CREATE TABLE users (
-  id INT DEFAULT NEXTVAL ('users_seq') PRIMARY KEY,
-  email varchar(65) NOT NULL,
-  password varchar(65) NOT NULL,
-  names varchar(65)
-);
-
+DROP SEQUENCE IF EXISTS funcion_pers_seq;
 CREATE SEQUENCE funcion_pers_seq;
-
-CREATE TABLE funcion_pers(
+DROP TABLE IF EXISTS funcion_pers;
+CREATE TABLE IF NOT EXISTS  funcion_pers(
   id_funcion INT DEFAULT NEXTVAL ('funcion_pers_seq') PRIMARY KEY,
   descripcion varchar(30) NOT NULL
 );
 
-CREATE TABLE personal(
-  id_funcion integer NOT NULL,
+DROP TABLE IF EXISTS aula;
+CREATE TABLE IF NOT EXISTS aula(
+  id_aula varchar(50) NOT NULL PRIMARY KEY,
+  nombre varchar(50) NOT NULL,
+  piso integer NOT NULL
+);
+
+DROP TABLE IF EXISTS personal;
+CREATE TABLE IF NOT EXISTS personal(
+  id_personal integer NOT NULL PRIMARY KEY,
   nombres varchar(50) NOT NULL,
   apellidos varchar(50) NOT NULL,
   correo varchar(50) NOT NULL,
+  contrasena varchar(65),
+  horario_trabajo varchar(50),
   horario_atencion varchar(50),
-  id_personal integer NOT NULL
+  estado BOOLEAN DEFAULT true,
+  id_aula varchar(50) REFERENCES aula(id_aula),
+  id_funcion integer REFERENCES funcion_pers(id_funcion)
 );
 
-ALTER TABLE personal ADD CONSTRAINT id_personal
-  PRIMARY KEY (id_personal);
-
-ALTER TABLE personal ADD CONSTRAINT fk_fun_id 
-  FOREIGN KEY (id_funcion) REFERENCES funcion_pers (id_funcion) ON UPDATE CASCADE;
-
-ALTER SEQUENCE sequence RESTART WITH 1;
-
--- Inserts for table personal
-INSERT INTO funcion_pers (descripcion) VALUES ('Admin');
+-- Inserts for table funcion personal
+INSERT INTO funcion_pers (descripcion) VALUES ('Autoridad');
 INSERT INTO funcion_pers (descripcion) VALUES ('Docente');
 INSERT INTO funcion_pers (descripcion) VALUES ('Administrativo');
 INSERT INTO funcion_pers (descripcion) VALUES ('Auxiliar de Servicio');
 
--- Inserts for table personal
-INSERT INTO personal VALUES (3,'Melina Susana','Vasquez Lopez','mvasquez@utm.edu.ec','Lunes: 09:00 a 10:00',1314675354);
-INSERT INTO personal VALUES (4,'Jorge','Daza Lopez','jdaza@utm.edu.ec',null,1305080121);
-INSERT INTO personal VALUES (2,'Jorge Luis','Veloz Zambrano','jveloz@utm.edu.ec','Viernes: 09:00 a 10:00',1305080122);
+-- Inserts for table aula
+INSERT INTO aula VALUES ('FCI-01-59-04-101','Ambiente 101',2);
 
--- Inserts for table users
-INSERT INTO users (email, password, names)
-  VALUES ('jonarsa_13@hotmail.com', crypt('123', gen_salt('bf')), 'Jonathan Rivera');
+-- Inserts for table personal -admin
+INSERT INTO personal (id_personal,nombres,apellidos,correo, contrasena, estado) VALUES (1314675354, 'Jonathan', 'Rivera', 'jonarsa_13@hotmail.com', crypt('123', gen_salt('bf')), '0' );
 
-CREATE EXTENSION pgcrypto;
+-- Inserts for table personal 
+INSERT INTO personal (id_personal,nombres,apellidos,correo,id_funcion,id_aula) VALUES ( 1314675353,'Melina Susana','Vasquez Lopez','mvasquez@utm.edu.ec',3,'FCI-01-59-04-101');
+INSERT INTO personal (id_personal,nombres,apellidos,correo,id_funcion) VALUES ( 1314675352,'Jorge','Daza','jdaza@utm.edu.ec',4);
+INSERT INTO personal (id_personal,nombres,apellidos,correo,estado, id_funcion,id_aula) VALUES ( 1314675351,'Danilo','Ramirez Lituma','dramirez@utm.edu.ec','0', 2,'FCI-01-59-04-101');
 
-UPDATE users SET password = crypt('123', gen_salt('bf')) WHERE id = '1';   -- it's is 
+-- vista Personal - Aula - Funcion
+CREATE VIEW view_pers_fun_aula
+ AS SELECT per.id_personal, per.nombres, per.apellidos, per.correo, per.horario_atencion, per.horario_trabajo, fun.descripcion as cargo, aula.nombre as aula
+	FROM personal as per,funcion_pers as fun, aula 
+	where per.id_funcion=fun.id_funcion AND per.estado=true;
 
-CREATE VIEW view_pers_fun
- AS SELECT per.id_personal, per.nombres, per.apellidos, per.correo, per.horario_atencion, fun.descripcion
-	FROM personal as per,funcion_pers as fun
-	where per.id_funcion=fun.id_funcion
-
-
-SELECT per.id_personal, per.nombres, per.apellidos, per.correo, per.horario_atencion, fun.descripcion
-	FROM personal as per,funcion_pers as fun
-	where per.id_funcion=fun.id_funcion
+-- vista Personal - Admin
+CREATE VIEW view_pers_admin
+AS SELECT id_personal,nombres,apellidos,correo,contrasena FROM personal WHERE contrasena!='';
 
 
-CREATE ROLE riverman WITH LOGIN SUPERUSER CREATEDB CREATEROLE PASSWORD ‘rivera123’;
+
