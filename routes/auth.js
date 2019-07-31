@@ -74,6 +74,33 @@ module.exports = (server) => {
     }
   })
 
+  server.get('/auth/getAula', async (req, res) => {
+    const results = await getAula()
+    if (results) {
+      return res.json({ results })
+    } else {
+      return res.status(500)
+    }
+  })
+
+  server.get('/auth/getTipoAula', async (req, res) => {
+    const results = await getTipoAula()
+    if (results) {
+      return res.json({ results })
+    } else {
+      return res.status(500)
+    }
+  })
+  
+  server.get('/auth/getResponsable', async (req, res) => {
+    const results = await getResponsable()
+    if (results) {
+      return res.json({ results })
+    } else {
+      return res.status(500)
+    }
+  })
+
   server.get('/auth/signout', (req, res) => {
     if (req.session && req.session.loggedin) {
       req.session.destroy()
@@ -154,6 +181,33 @@ module.exports = (server) => {
   async function getFuncionPers() {
     try {
       const q = await pool.query('SELECT * FROM funcion_pers')
+      return q.rows
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
+  async function getAula() {
+    try {
+      const q = await pool.query('SELECT * FROM aula')
+      return q.rows
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
+  async function getTipoAula() {
+    try {
+      const q = await pool.query('SELECT * FROM tipo_aula')
+      return q.rows
+    } catch (e) {
+      console.error(e)
+    }
+  }
+  
+  async function getResponsable() {
+    try {
+      const q = await pool.query('SELECT * FROM view_pers_resp')
       return q.rows
     } catch (e) {
       console.error(e)
