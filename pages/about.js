@@ -8,137 +8,69 @@ import { Row, Col, Table, FormGroup, Label, Input, Button, Nav, NavItem, NavLink
 
 
 export default class extends React.Component {
-    static async getInitialProps({ req, res }) {
-        let props = {
-            session: ''
-        }
-        if (req && req.session) {
-            props.session = req.session
-        } else {
-            props.session = await Session.getSession()
-        }
-        return props
-    }
+	static async getInitialProps({ req, res }) {
+		let props = {
+			session: ''
+		}
+		if (req && req.session) {
+			props.session = req.session
+		} else {
+			props.session = await Session.getSession()
+		}
+		return props
+	}
 
-    constructor(props) {
-        super(props)
-        this.state = {
-            message: null,
-            activeTab: '1',                                      // Variable del navTab en la info del aula
-        }
-    }
-
-    tab_toggle(tab) {
-        if (this.state.activeTab !== tab) {
-            this.setState({
-                activeTab: tab
-            });
-        }
-    }
+	constructor(props) {
+		super(props)
+		this.state = {
+		}
+	}
 
 
-    render() {
-        const alert = (this.state.message === null) ? <div /> : <div className={`alert alert-danger`} role="alert">{this.state.message}</div>
-        return (
-            <Layout  {...this.props}>
-                <Row >
-                    <Col>
-                        <h3 className="text-center ">Aula[...]</h3> <br />
-                        <Row>
-                            <Col md="12"><FormGroup row>
-                                <Label md={2} for="IDdesc">Descripción</Label>
-                                <Col md={8}>
-                                    <Input type="text" name="desc" id="IDdesc" defaultValue="Aula 204" />
-                                </Col>
-                                <Col className='text-center' md={2}>
-                                    <Button id='clean' color="primary" type="submit" >Guardar{' '}<span className="icon ion-md-checkmark-circle-outline" /></Button>
-                                </Col>
-                            </FormGroup></Col>
-                            <Col md="5">
-                                <FormGroup row>
-                                    <Label md={3} for="IDambc">Codigo</Label>
-                                    <Col md={9}>
-                                        <Input type="text" disabled name="ambc" id="IDambc" defaultValue="FCI-01-59-04-204" />
-                                    </Col>
-                                </FormGroup>
-                                <FormGroup row>
-                                    <Label md={3} for="IDresp">Respons.</Label>
-                                    <Col md={9}>
-                                        <Input type="text" name="resp" id="IDresp" defaultValue="Ing. Cristhian Torres" />
-                                    </Col>
-                                </FormGroup>
-                            </Col>
-                            <Col md="4">
-                                <FormGroup row>
-                                    <Label md={3} for="IDtipo">Tipo</Label>
-                                    <Col md={9}>
-                                        <Input type="text" name="tipo" id="IDtipo" defaultValue="Laboratorio" />
-                                    </Col>
-                                </FormGroup>
-                                <FormGroup row>
-                                    <Label md={3} for="IDdim">Dimen.</Label>
-                                    <Col md={9}>
-                                        <Input type="text" name="dim" id="IDdim" defaultValue="8.10 x 3.00 m" />
-                                    </Col>
-                                </FormGroup>
-                            </Col>
-                            <Col md="3">
-                                <FormGroup row>
-                                    <Label md={3} for="IDpiso">Piso</Label>
-                                    <Col md={9}>
-                                        <Input disabled type="text" name="piso" id="IDpiso" defaultValue="2" />
-                                    </Col>
-                                </FormGroup>
-                                <FormGroup row>
-                                    <Label md={3} for="IDtipo">Capac.</Label>
-                                    <Col md={9}>
-                                        <Input type="text" name="tipo" id="IDtipo" defaultValue="30" />
-                                    </Col>
-                                </FormGroup>
-                            </Col>
-                        </Row>
-                        <div id='tabs'>
-                            <Row>
-                                <Col md="12">
-                                    <Nav tabs fill>
-                                        <NavItem>
-                                            <NavLink className={classnames({ active: this.state.activeTab === '1' })} onClick={() => { this.tab_toggle('1'); }}>Implementos</NavLink>
-                                        </NavItem>
-                                        <NavItem>
-                                            <NavLink className={classnames({ active: this.state.activeTab === '2' })} onClick={() => { this.tab_toggle('2'); }}>Horario</NavLink>
-                                        </NavItem>
-                                        <NavItem>
-                                            <NavLink className={classnames({ active: this.state.activeTab === '3' })} onClick={() => { this.tab_toggle('3'); }}>Imagen 360°</NavLink>
-                                        </NavItem>
-                                    </Nav>
-                                </Col>
-                            </Row>
-                        </div>
-                        <TabContent activeTab={this.state.activeTab}>
-                            <TabPane tabId="1">
-                                <Row>
-                                    <Col md="12">
-                                        <AulaImp />
-                                    </Col>
-                                </Row>
-                            </TabPane>
-                            <TabPane tabId="2">
-                                <Row>
-                                    <Col md="12">
-                                        <AulaHor />
-                                    </Col>
-                                </Row>
-                            </TabPane>
-                            <TabPane tabId="3">
-                                <p>Hola 3</p>
-                            </TabPane>
-
-                        </TabContent>
-                    </Col>
-                </Row> 
-            </Layout>
-        )
-    }
+	render() {
+		return (
+			<Layout  {...this.props}>
+				<Row >
+					<Col>
+						<h1 className="text-center display-4 m-2 ">Desarrolladores</h1>
+						<Row className="m-4">
+							<Col md={3}>
+								<Col className='d-flex align-items-center justify-content-center'>
+									<img className="rounded-circle" src="/static/about/Rivera.jpg" alt="Jonathan Rivera" width="140" height="140"></img>
+								</Col>
+								<h2 className="text-center">Jonathan Rivera</h2>
+								<p className="text-center">Analista de Sistemas <br />Programador <br />Diseñador <br/>
+								<a target="_blank" href="https://github.com/MrLexJR" className="text-muted font-weight-bold" > @MrLexJR</a> </p>
+							</Col>
+							<Col md={3}>
+								<Col className='d-flex align-items-center justify-content-center'>
+									<img className="rounded-circle" src="/static/about/Sumba.jpg" alt="Jonathan Rivera" width="140" height="140"></img>
+								</Col>
+								<h2 className="text-center">Angel Sumba</h2>
+								<p className="text-center">Desarrollador 3D <br />Programador <br />Diseñador</p>
+							</Col>
+							<Col md={3}>
+								<Col className='d-flex align-items-center justify-content-center'>
+									<img className="rounded-circle" src="/static/about/Melina.jpg" alt="Jonathan Rivera" width="140" height="140"></img>
+								</Col>
+								<h2 className="text-center">Melina Vasquez</h2>
+								<p className="text-center">Documentadora<br />Diseñadora <br/>
+								<a target="_blank" href="https://github.com/melinavl97" className="text-muted font-weight-bold" > @melinavl97</a>  </p>
+							</Col>
+							<Col md={3}>
+								<Col className='d-flex align-items-center justify-content-center'>
+									<img className="rounded-circle" src="/static/about/Chilan.jpg" alt="Jonathan Rivera" width="140" height="140"></img>
+								</Col>
+								<h2 className="text-center">Cristhian Loor</h2>
+								<p className="text-center">Analista de Sistemas<br/> Tester </p>
+							</Col>
+						</Row>
+						<p className="text-center text-muted"> El proyecto se encuentra almacenado en <a target="_blank" href="https://github.com/MrLexJR/Proy-Facultad-Informativa" className="text-muted font-weight-bold" > github</a> </p>
+					</Col>
+				</Row>
+			</Layout>
+		)
+	}
 }
 
 

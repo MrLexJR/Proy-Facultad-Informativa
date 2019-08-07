@@ -10,6 +10,7 @@ import {
   Modal, ModalHeader, ModalBody, ModalFooter, Col, FormGroup, Label, Row, Table, NavbarToggler, Form,
   TabContent, TabPane, NavLink, Collapse, Card, CardBody, CardImg, Tooltip, FormText
 } from 'reactstrap'
+import { InputGroup, InputGroupText, InputGroupAddon} from 'reactstrap'
 
 
 export default class extends React.Component {
@@ -110,7 +111,7 @@ export class BarraNav1 extends React.Component {
         modal: !prevState.modal,
         selectAmb: event.target.text
       }));
-    }else if(this.state.nestedModal == true){
+    } else if (this.state.nestedModal == true) {
       this.setState(prevState => ({
         modal: !prevState.modal,
         nestedModal: !prevState.nestedModal,
@@ -125,7 +126,7 @@ export class BarraNav1 extends React.Component {
     });
   }
 
- 
+
   tab_toggle(tab) {
     if (this.state.activeTab !== tab) {
       this.setState({
@@ -201,7 +202,7 @@ export class BarraNav1 extends React.Component {
               <Container>
                 <hr className="mt-3" />
                 <p className="text-muted small">
-                  <Link href="#"><a className="text-muted font-weight-bold"><span className="icon ion-logo-buffer" />{' '}{Package.name} {Package.version}</a></Link>
+                  <Link href="/"><a className="text-muted font-weight-bold"><span className="icon ion-logo-buffer" />{' '}{Package.name} {Package.version}</a></Link>
                   {' '}<span>construido con</span>{' '}
                   <Link href="https://github.com/zeit/next.js"><a className="text-muted font-weight-bold">Next.js {Package.dependencies.next.replace('^', '')}</a></Link>
                   {' '}<span>&amp;</span>{' '}
@@ -219,10 +220,19 @@ export class BarraNav1 extends React.Component {
 }
 
 export class HdModal extends React.Component {
+
+  constructor(props) {
+    super(props)
+    this.state = {
+      ambiente: 0, IDdesc: 'Ambiente 101', IDambc: 'FCI-01-59-04-101', IDresp: 0, IDnom_res:'Laura Jimenez', IDtipo: 2, IDnom_tipo:'Aula', IDl: 4.55, IDa: 2.88, IDpiso: 1, IDcap: 30
+    }
+  }
+
   render() {
     if (this.props.state.selectAmb !== 'Personal') {
+      const type_cap = (this.state.IDtipo === 0) ? <span></span> : (this.state.IDtipo === '1') ? <span className="icon ion-ios-desktop"></span> : <span className="icon ion-ios-people"></span>
       return (
-        <Modal isOpen={this.props.state.modal} toggle={this.props.toggle} className='modal-lg'>
+        <Modal isOpen={this.props.state.modal} toggle={this.props.toggle} className='modal-lg modal-dialog-centered'>
           <ModalHeader toggle={this.props.toggle}><span className='mr-2'>{this.props.state.selectAmb}</span></ModalHeader>
           <ModalBody>
             <Row>
@@ -230,13 +240,13 @@ export class HdModal extends React.Component {
                 <FormGroup row>
                   <Label md={3} for="IDambc">Codigo</Label>
                   <Col md={9}>
-                    <Input disabled type="text" name="ambc" id="IDambc" placeholder="FCI-01-59-04-204" />
+                    <Input disabled type="text" name="ambc" id="IDambc" value={this.state.IDambc} />
                   </Col>
                 </FormGroup>
                 <FormGroup row>
                   <Label md={3} for="IDresp">Respons.</Label>
                   <Col md={9}>
-                    <Input disabled type="text" name="resp" id="IDresp" placeholder="Ing. Cristhian Torres" />
+                    <Input disabled type="text" name="resp" id="IDresp" value={this.state.IDnom_res} />
                   </Col>
                 </FormGroup>
               </Col>
@@ -244,27 +254,37 @@ export class HdModal extends React.Component {
                 <FormGroup row>
                   <Label md={3} for="IDtipo">Tipo</Label>
                   <Col md={9}>
-                    <Input disabled type="text" name="tipo" id="IDtipo" placeholder="Laboratorio" />
+                    <Input disabled type="text" name="tipo" id="IDtipo" value={this.state.IDnom_tipo} />
                   </Col>
                 </FormGroup>
                 <FormGroup row>
-                  <Label md={3} for="IDdim">Dimen.</Label>
-                  <Col md={9}>
-                    <Input disabled type="text" name="dim" id="IDdim" placeholder="8.10 x 3.00 m" />
+                  <Label md={1} for="IDl">L</Label>
+                  <Col md={4}>
+                    <Input disabled type="text" name="IDl" id="IDl" value={this.state.IDl} />
                   </Col>
+                  <Label md={1} for="IDa">A</Label>
+                  <Col md={4}>
+                    <Input disabled type="text" name="IDa" id="IDa" value={this.state.IDa} />
+                  </Col>
+                  <Label className="col-md-0 col-form-label">m</Label>
                 </FormGroup>
               </Col>
               <Col md="3">
                 <FormGroup row>
                   <Label md={3} for="IDpiso">Piso</Label>
                   <Col md={9}>
-                    <Input disabled type="text" name="piso" id="IDpiso" placeholder="2" />
+                    <Input disabled type="text" name="piso" id="IDpiso" value={this.state.IDpiso} />
                   </Col>
                 </FormGroup>
                 <FormGroup row>
                   <Label md={3} for="IDtipo">Capac.</Label>
                   <Col md={9}>
-                    <Input disabled type="text" name="tipo" id="IDtipo" placeholder="30" />
+                  <InputGroup>
+                    <Input disabled type="text" name="IDcap" id="IDcap" value={this.state.IDcap} />
+                    <InputGroupAddon addonType="append">
+                      <InputGroupText>{type_cap}</InputGroupText>
+                    </InputGroupAddon>
+                    </InputGroup>
                   </Col>
                 </FormGroup>
               </Col>
@@ -311,7 +331,7 @@ export class HdModal extends React.Component {
       )
     } else if (this.props.state.selectAmb == 'Personal') {
       return (
-        <Modal isOpen={this.props.state.modal} toggle={this.props.toggle} className='modal-lg'>
+        <Modal isOpen={this.props.state.modal} toggle={this.props.toggle} className='modal-lg modal-dialog-centered'>
           <ModalHeader toggle={this.props.toggle}><span className='mr-2'>Buscar {this.props.state.selectAmb}</span></ModalHeader>
           <ModalBody>
             <Row>

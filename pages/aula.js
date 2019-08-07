@@ -5,7 +5,7 @@ import Session from '../utils/session'
 import AulaImp from '../pages/aula_imp'
 import AulaHor from '../pages/aula_hor'
 import classnames from 'classnames'
-import { InputGroup, InputGroupText, InputGroupAddon, Row, Col, Table, Form, FormGroup, Label, Input, Button, Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap'
+import { CustomInput, InputGroup, InputGroupText, InputGroupAddon, Row, Col, Table, Form, FormGroup, Label, Input, Button, Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap'
 
 export default class extends React.Component {
   static async getInitialProps({ req, res }) {
@@ -31,11 +31,23 @@ export default class extends React.Component {
     this.state = {
       message: null,
       activeTab: '1',                                      // Variable del navTab en la info del aula
-      row_aula: [], row_aula_tipo: [], row_respons:[],
-      ambiente: 0, IDdesc: '', IDambc: '', IDresp: 0, IDtipo: 0, IDl: '', IDa: '', IDpiso: '', IDcap: ''
+      row_aula: [], row_aula_tipo: [], row_respons: [],
+      ambiente: 0, IDdesc: '', IDambc: '', IDresp: 0, IDtipo: 0, IDl: '', IDa: '', IDpiso: '', IDcap: '',
+      file: '/static/FCI-1.2.jpg'
     }
     this.handleAmb = this.handleAmb.bind(this)
     this.handleProcessData = this.handleProcessData.bind(this)
+    this.handleChangeImg = this.handleChangeImg.bind(this)
+  }
+
+  handleChangeImg(event) {
+    if (event.target.files[0]) {
+      console.log(event.target.files[0])
+      this.setState({
+        file: URL.createObjectURL(event.target.files[0])
+      })
+    }
+    console.log(this.state.file)
   }
 
   tab_toggle(tab) {
@@ -117,7 +129,7 @@ export default class extends React.Component {
       })
   }
 
-//Opciones del Tipo del Aula  
+  //Opciones del Tipo del Aula  
   renderOptTipoA() {
     return this.state.row_aula_tipo.map((row) => {
       const { id_tipo_aula, nombre } = row
@@ -126,7 +138,7 @@ export default class extends React.Component {
       )
     })
   }
-//Opciones del Aula 
+  //Opciones del Aula 
   renderOptAula() {
     return this.state.row_aula.map((row) => {
       const { id_aula, nombre, piso } = row
@@ -136,11 +148,11 @@ export default class extends React.Component {
     })
   }
   //Opciones del Responsable 
-  renderOptResp(){
+  renderOptResp() {
     return this.state.row_respons.map((row) => {
       const { id_personal, nombres, apellidos } = row
       return (
-        <option key={id_personal} value={id_personal} >{nombres+' '+apellidos}</option>
+        <option key={id_personal} value={id_personal} >{nombres + ' ' + apellidos}</option>
       )
     })
   }
@@ -149,6 +161,7 @@ export default class extends React.Component {
     this.getAula();
     this.getResponsable();
     this.getTipoAula();
+
   }
 
   render() {
@@ -212,7 +225,7 @@ export default class extends React.Component {
                     <Col md={4}>
                       <Input type="number" name="IDa" id="IDa" step={0.01} value={this.state.IDa} onChange={this.handleProcessData} />
                     </Col>
-                    <Label md={2}>mts</Label>
+                    <Label md={1}>mts</Label>
                   </FormGroup>
                 </Col>
                 <Col md="3">
@@ -269,9 +282,13 @@ export default class extends React.Component {
                 </Row>
               </TabPane>
               <TabPane tabId="3">
-                <p>Hola 3</p>
+                <Row className='m-2'>
+                  <Col className='m-2 d-flex align-items-center justify-content-center contAdmImg'>
+                    <img className='rounded' src={this.state.file} />
+                  </Col>
+                  <CustomInput onChange={this.handleChangeImg} type="file" id="imgPers" name="imgPers" />
+                </Row>
               </TabPane>
-
             </TabContent>
           </Col>
         </Row>

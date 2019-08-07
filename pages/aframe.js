@@ -12,6 +12,7 @@ export default class extends React.Component {
       }
       this.toggle = this.toggle.bind(this);
       this.tab_toggle = this.tab_toggle.bind(this);
+      this.escribir = this.escribir.bind(this);
    }
 
    toggle(e) {
@@ -41,7 +42,9 @@ export default class extends React.Component {
          entityEl.setAttribute('material', 'color', 'lightgrey');
          entityEl.setAttribute('geometry', { primitive: "plane", height: "1.5", width: "3" });
          entityEl.setAttribute('position', { x: x, y: y, z: z });
-         entityEl.setAttribute('click', this.toggle);
+         // entityEl.setAttribute('click', this.myFunctionid);
+         entityEl.addEventListener('click',function (evt) { console.log('Func') } );
+         // entityEl.onclick = function() {this.myFunctionid;};
          entityEl.setAttribute('name', cod);
          entityEl.setAttribute('id', cod);
          entityEl.setAttribute('text', 'value', cod);
@@ -72,7 +75,7 @@ export default class extends React.Component {
          this.escribir("103", 5.6, y1, z1),
          this.escribir("104", 10.11, y1, z1),
          this.escribir("105", 16.17, y1, z1),
-         this.escribir("106", 22.3, y1, z1),
+         // this.escribir("106", 22.3, y1, z1),
          this.escribir("107", 28.4, y1, z1),
          this.escribir("108", 32.8, y1, z1),
          this.escribir("109", 38.46, y1, z1),
@@ -130,7 +133,11 @@ export default class extends React.Component {
          require('aframe-extras');
          this.setState({ appRendered: true })
       }
-      
+
+      function myFunctionid(comp) {
+         let id = comp.id;
+         alert(id);
+     }
 
       $(document).keydown(function (e) {
          e = e || window.event;
@@ -145,10 +152,9 @@ export default class extends React.Component {
             document.querySelector('[camera]').setAttribute('position', { x: 22, y: 3, z: 15 });
          }
 
-         if (charCode) {
-            var cameraEl = document.querySelector('[camera]').getAttribute('position');
-         }
       });
+
+
    }
 
    render() {
@@ -156,89 +162,97 @@ export default class extends React.Component {
          // <body className="a-body">
          <div style={{ height: '100%', width: '100%' }} >
             <HdModal state={this.state} toggle={this.toggle} tab_toggle={this.tab_toggle} />
-            <a href="#" onClick={this.toggle} >Aula 106</a>
+            {/* <a href="#" onClick={this.toggle} >Aula 106</a> */}
             {this.state.appRendered &&
                <a-scene id="c" background="color: #FAFAFA" environment="preset: forest" embedded debug="" physics="debug: false"
-                  canvas="" inspector="" keyboard-shortcuts="" screenshot="" vr-mode-ui="" auto-enter-vr="">
-                  <a-assets> <img id="sky" src="/static/cielo.jpg" /> </a-assets>
-                  {/* <Entity primitive="a-sky" src="#sky" rotation="0 -90 0"  />
-                  <Entity primitive="a-light" type="point" color="#f4f4f4" intensity="0.4" position="8 100 18" />
-                  <Entity primitive="a-light" type="point" color="#f4f4f4" intensity="0.8" position="8 100 18" />
-                  <Entity primitive="a-light" type="ambient" color="#f4f4f4" intensity="0.6" position="8 100 18" /> */}
+               canvas="" inspector="" keyboard-shortcuts="" screenshot="" vr-mode-ui="" auto-enter-vr="">
+               <a-assets> <img id="sky" src="/static/cielo.jpg" /> </a-assets>
+               
 
-                  <a-sky src="#sky" rotation="0 -90 0"></a-sky>
-                  <a-entity light="type: point; color: #f4f4f4; intensity: 0.4; distance: 0" position="8 100 18"></a-entity>
-                  <a-entity light="type: point; color: #f4f4f4; intensity: 0.8; distance: 0" position="8 100 18"></a-entity>
-                  <a-entity light="type: ambient; color: #f4f4f4; intensity: 0.6;" position="8 100 18"></a-entity>
+               <a-sky src="#sky" rotation="0 -90 0"></a-sky>
+               <a-entity light="type: point; color: #f4f4f4; intensity: 0.4; distance: 0" position="8 100 18"></a-entity>
+               <a-entity light="type: point; color: #f4f4f4; intensity: 0.8; distance: 0" position="8 100 18"></a-entity>
+               <a-entity light="type: ambient; color: #f4f4f4; intensity: 0.6;" position="8 100 18"></a-entity>
 
-                  <a-entity id="floor" static-body geometry="depth:80;height:0.2;width:200;"
-                     material="repeat:500 200;coloass:0.1;src:https://ucarecdn.com/8a2780f7-e076-4f8c-bd1d-40ae172508a9/"
-                     visible="true"></a-entity>
 
-                  <a-entity id="flo" static-body geometry="depth:50;height:0.2;width:150;" position="0 -0.5 0" visible="false"></a-entity>
-                  <a-entity id="floor2" static-body geometry="depth:2;height:0.2;width:71;" position="20 2.5 4.7" visible="false"></a-entity>
-                  <a-entity id="floor3" static-body geometry="depth:2;height:0.2;width:71;" position="20 5 4.7" visible="false"></a-entity>
+               <a-box id="piso" width="200" height="0.2" depth="80" visible="true" static-body="" material="repeat:500 200;coloass:0.1;src:https://ucarecdn.com/8a2780f7-e076-4f8c-bd1d-40ae172508a9/"></a-box>
 
-                  <a-box id="pared" width="0.1" height="8" depth="4" position="-13.5 5 2" visible="false" static-body></a-box>
-                  <a-box id="pared" width="3.2" height="0.1" depth="0.5" position="-13.5 1.4 -1.1" visible="false" static-body></a-box>
+               <a-box id="piso" width="200" height="0.2" depth="80" visible="true" static-body="" position="0 1.3 0"></a-box>
 
-                  <a-entity static-body geometry="depth:5;height:0.2;width:1.7;" rotation="18 0 0" position="-14.3 0.65 1" visible="false"></a-entity>
-                  <a-entity static-body geometry="depth:6;height:0.2;width:2.5;" rotation="-16 0 0" position="-12.4 1.75 1" visible="false"></a-entity>
-                  <a-entity static-body geometry="depth:6;height:0.2;width:1.8;" rotation="18 0 0" position="-14.3 3.5 1" visible="false"></a-entity>
-                  <a-entity static-body geometry="depth:6;height:0.2;width:2.5;" rotation="-12 0 0" position="-12.4 4.4 1" visible="false"></a-entity>
-                  <a-entity static-body geometry="depth:0.1;height:1;width:2;" rotation="0 0 0" position="-14.3 6 4.1 " visible="false"></a-entity>
+               <a-entity id="flo" static-body="" geometry="depth:50;height:0.2;width:150;" position="0 1 0" visible="false"></a-entity>
+               <a-entity id="floor2" static-body="" geometry="depth:2;height:0.2;width:71;" position="20 3.8 4.7" visible="false"></a-entity>
+               <a-entity id="floor3" static-body="" geometry="depth:2;height:0.2;width:71;" position="20 6.3 4.7" visible="false"></a-entity>
 
-                  <a-box id="pared" width="0.1" height="8" depth="4" position="8 4 2" visible="false" static-body></a-box>
-                  <a-box id="pared" width="3" height="1" depth="0.1" position="8 0.5 4" visible="false" static-body></a-box>
-                  <a-box id="pared" width="2" height="1" depth="0.1" position="9 5.5 4" visible="false" static-body></a-box>
-                  <a-box id="sube" width="1.7" height="0.2" depth="5" rotation="18 0 0" position="8.9 0.65 1" visible="false" static-body></a-box>
-                  <a-box id="sube1" width="2" height="0.2" depth="6" rotation="-16 0 0" position="7 1.75 1" visible="false" static-body></a-box>
-                  <a-box id="sube2" width="1.8" height="0.2" depth="6" rotation="18 0 0" position="8.9 3.5 1" visible="false" static-body></a-box>
-                  <a-box id="sube3" width="2" height="0.2" depth="6" rotation="-12 0 0" position="7 4.4 1" visible="false" static-body></a-box>
+               <a-box id="pared" width="0.1" height="8" depth="4" position="-13.5 6.3 2" visible="false" static-body=""></a-box>
+               
 
-                  <a-box id="pared" width="0.1" height="8" depth="4" position="35 5 2" visible="false" static-body></a-box>
-                  <a-box id="pared" width="3" height="1" depth="0.1" position="36.4 0.5 4.3" visible="false" static-body></a-box>
-                  <a-box id="pared" width="2" height="1" depth="0.1" position="34.1 5.5 4" visible="false" static-body></a-box>
-                  <a-box id="sube" width="1.7" height="0.2" depth="5" rotation="18 0 0" position="34.1 0.65 1" visible="false" static-body></a-box>
-                  <a-box id="sube1" width="2.5" height="0.2" depth="6" rotation="-16 0 0" position="36.4 1.75 1" visible="false" static-body></a-box>
-                  <a-box id="sube2" width="1.8" height="0.2" depth="6" rotation="18 0 0" position="34.1 3.5 1" visible="false" static-body></a-box>
-                  <a-box id="sube3" width="2.5" height="0.2" depth="6" rotation="-12 0 0" position="36.4 4.4 1" visible="false" static-body></a-box>
+               <a-box id="pared" width="1.7" height="0.2" depth="5" rotation="18 0 0" position="-14.3 1.95 1"  visible="false" static-body=""></a-box>
+               <a-box id="pared" width="2.5" height="0.2" depth="6" rotation="-16 0 0" position="-12.4 3.05 1" visible="false" static-body=""></a-box>
+               <a-box id="pared" width="1.8" height="0.2" depth="6" position="8 4 2" rotation="18 0 0" position="-14.3 4.8 1" visible="false" static-body=""></a-box>
+               <a-box id="pared" width="2.5" height="0.2" depth="6" position="8 4 2" rotation="-12 0 0" position="-12.4 5.7 1" visible="false" static-body=""></a-box>
+               <a-box id="pared" width="2" height="1.5" depth="0.1" position="8 4 2" position="-14.3 7.3 4.1 "  visible="false" static-body=""></a-box>
+                <a-box id="pared" width="2" height="1.5" depth="0.1" position="8 4 2" position="-12.3 1.8 4.1 "  visible="false" static-body=""></a-box>
 
-                  <Entity id="player" listener health="200" userHeight="1.6" primitive="a-camera" wasd-controls="acceleration: 100"
-                     position={{ x: 22, y: 1, z: 15 }} radius="30" rotation="0 0 0" look-controls="pointerLockEnabled: true" >
-                     <Entity position={{ x: 0, y: 0, z: -0.5 }} primitive="a-cursor" animation__click={{ property: 'scale', startEvents: 'click', from: '0.1 0.1 0.1', to: '1 1 1', dur: 100 }} geometry="primitive:ring;radiusInner:0.01;radiusOuter:0.016"
-                        material="opacity:0.5;shader:flat;transparent:true;color:#1822BE" scale="0.8 0.8 0.8" />
-                  </Entity>
+               <a-box id="pared" width="0.1" height="8" depth="4" position="8 5.3 2" visible="false" static-body=""></a-box>
+               <a-box id="pared" width="3" height="1.5" depth="0.1" position="8 1.8 4" visible="false" static-body=""></a-box>
+               <a-box id="pared" width="2" height="1.5" depth="0.1" position="9 6.8 4" visible="false" static-body=""></a-box>
+               <a-box id="sube" width="1.7" height="0.2" depth="5" rotation="18 0 0" position="8.9 1.35 1" visible="false" static-body=""></a-box>
+               <a-box id="sube1" width="2" height="0.2" depth="6" rotation="-16 0 0" position="7 3.05 1" visible="false" static-body=""></a-box>
+               <a-box id="sube2" width="1.8" height="0.2" depth="6" rotation="18 0 0" position="8.9 4.7 1" visible="false" static-body=""></a-box>
+               <a-box id="sube3" width="2" height="0.2" depth="6" rotation="-12 0 0" position="7 5.7 1" visible="false" static-body=""></a-box>
 
-                  {/* <a-entity camera id="player" listener player="health: 200" userHeight="1.6"
-                     universal-controls="movementAcceleration: 100;" position="22 3 15" kinematic-body="radius:0.5" rotation="0 0 0"
-                     look-controls="pointerLockEnabled: true">
-                     <a-entity cursor position="0 0 -0.5" geometry="primitive:ring;radiusInner:0.01;radiusOuter:0.016"
-                        material="opacity:0.5;shader:flat;transparent:true;color:#1822BE" scale="0.8 0.8 0.8"></a-entity>
-                  </a-entity> */}
+               <a-box id="pared" width="0.1" height="8" depth="4" position="35 6.3 2" visible="false" static-body=""></a-box>
+               <a-box id="pared" width="3" height="1.5" depth="0.1" position="36.4 1.8 4.3" visible="false" static-body=""></a-box>
+               <a-box id="pared" width="2" height="1.5" depth="0.1" position="34.1 6.8 4" visible="false" static-body=""></a-box>
+               <a-box id="sube" width="1.7" height="0.2" depth="5" rotation="18 0 0" position="34.1 1.95 1" visible="false" static-body=""></a-box>
+               <a-box id="sube1" width="2.5" height="0.2" depth="6" rotation="-16 0 0" position="36.4 3.05 1" visible="false" static-body=""></a-box>
+               <a-box id="sube2" width="1.8" height="0.2" depth="6" rotation="18 0 0" position="34.1 4.8 1" visible="false" static-body=""></a-box>
+               <a-box id="sube3" width="2.5" height="0.2" depth="6" rotation="-12 0 0" position="36.4 5.7 1" visible="false" static-body=""></a-box>
 
-                  <a-box id="wall_2" width="70" height="5.3" depth="0.1" position="20 5.3 5.5" visible="false" static-body></a-box>
-                  <a-box id="pared al extremo" width="0.1" height="5.2" depth="2" position="54.9 5.3 5" visible="false" static-body></a-box>
-                  <a-box id="pared baño" width="0.1" height="8" depth="7" position="-15 5 2" visible="false" static-body></a-box>
-                  <a-box id="pered trasera" width="70" height="9.6" depth="0.1" position="20 5 -1.4" visible="false" static-body></a-box>
 
-                  <a-box id="bloque 1" width="18.8" height="8" depth="6.5" position="-2.7 4 1.1" visible="false" static-body></a-box>
-                  <a-box id="bloque 2" width="24.5" height="8" depth="6.5" position="21.5 4 1.1" visible="false" static-body></a-box>
-                  <a-box id="bloque 3" width="18.8" height="8" depth="6.5" position="45.6 4 1.1" visible="false" static-body></a-box>
-                  <a-box id="bloque baño" width="4" height="3" depth="6.5" position="-19.13 1.5 1.1" visible="false" static-body>
-                  </a-box>
+               <a-box id="wall_2" width="70" height="8.4" depth="0.1" position="20 6.6.3 5.5" visible="false" static-body=""></a-box>
+               <a-box id="pared al extremo" width="0.1" height="5.2" depth="2" position="54.9 6.6 5" visible="false" static-body=""></a-box>
+               <a-box id="pared baño" width="0.1" height="8" depth="7" position="-15 6 2" visible="false" static-body=""></a-box>
+               <a-box id="pered trasera" width="70" height="10" depth="0.1" position="20 6 -1.4" visible="true" static-body=""></a-box>
 
-                  <a-entity position="-20 0.11 -6" rotation="0 0 0" scale="0.01 0.01 0.01"
-                     obj-model="mtl:/static/fci-obj/PRUEBA.mtl; obj:/static/fci-obj/PRUEBA.obj "> </a-entity>
+               <a-box id="bloque 1" width="18.9" height="8" depth="6.5" position="-2.7 5.3 1.1" visible="false" static-body=""></a-box>
+               <a-box id="bloque 2" width="24.5" height="8" depth="6.5" position="21.5 5.3 1.1" visible="false" static-body=""></a-box>
+               <a-box id="bloque 3" width="18.8" height="8" depth="6.5" position="45.6 5.3 1.1" visible="false" static-body=""></a-box>
+               <a-box id="bloque baño" width="4" height="3" depth="6.5" position="-19.13 2.8 1.1" visible="false" static-body="">
+               </a-box>
 
-                  <a-box id="pered t" width="150" height="9.6" depth="0.1" position="0 0 24" visible="false" static-body></a-box>
-                  <a-box id="pered tr" width="150" height="9.6" depth="0.1" position="0 0 -24" visible="false" static-body></a-box>
-                  <a-box id="pered tra" width="0.1" height="9.6" depth="50" position="65 0 0" visible="false" static-body></a-box>
-                  <a-box id="pered tras" width="0.1" height="9.6" depth="50" position="-40 0 0" visible="false" static-body></a-box>
+                <a-entity position="-20 0.11 -6" rotation="0 0 0" scale="0.01 0.01 0.01"
+                  obj-model="mtl:/static/fci-obj/PRUEBA.mtl; obj:/static/fci-obj/PRUEBA.obj "> </a-entity>
 
-                  <a-entity position="22 6.3 5.5" material="color: lightgrey"
-                     text="align:center;value:FACULTAD DE CIENCIAS INFORMATICAS ;width:17;color:#fff;font:mozillavr"></a-entity>>
-               </a-scene>
+               <a-box id="pered t" width="150" height="9.6" depth="0.1" position="0 1.3 24" visible="false" static-body=""></a-box>
+               <a-box id="pered tr" width="150" height="9.6" depth="0.1" position="0 1.3 -24" visible="false" static-body=""></a-box>
+               <a-box id="pered tra" width="0.1" height="9.6" depth="50" position="65 1.3 0" visible="false" static-body=""></a-box>
+               <a-box id="pered tras" width="0.1" height="9.6" depth="50" position="-40 1.3 0" visible="false" static-body=""></a-box>
+
+               <a-entity position="22 6.3 5.5" material="color: lightgrey"
+                  text="align:center;value:FACULTAD DE CIENCIAS INFORMATICAS ;width:17;color:#fff;font:mozillavr"></a-entity>
+
+              
+              <Entity id='Aula 106' position="22.3 1.5 4.4" material="color: lightgrey" scale= '0.1 0.1 0.1'
+                  text="align:center;value:106 ;width:30;color:#000000;"  geometry="primitive:plane;height:1.5;width:3"  events={{ click: this.toggle}}/>
+             
+
+            
+         
+                <Entity id="player" userHeight="1.6" primitive="a-camera"   wasd-controls="acceleration: 200"
+                  position={{ x: 22, y: 2, z: 15 }} kinematic-body="radius:0.6"  look-controls="" >
+                  <Entity position={{ x: 0, y: 0, z: -0.5 }} primitive="a-cursor" animation__click={{ property: 'scale', startEvents: 'click', from: '0.1 0.1 0.1', to: '1 1 1', dur: 100 }} geometry="primitive:ring;radiusInner:0.01;radiusOuter:0.016"
+                     material="opacity:0.5;shader:flat;transparent:true;color:#1822BE" scale="0.01 0.01 0.01" />
+               </Entity>
+
+                      
+     {/* <Entity  primitive="a-camera"  id="player"   listener player="health: 200" userHeight="1.6"   universal-controls="movementAcceleration: 100;"   position="22 3 15" kinematic-body="radius:0.5" rotation="0 0 0" look-controls="pointerLockEnabled: true" >
+     <Entity cursor position="0 0 -0.5" geometry="primitive:ring;radiusInner:0.01;radiusOuter:0.016" material="opacity:0.5;shader:flat;transparent:true;color:#1822BE" scale="0.8 0.8 0.8"   ></Entity>
+     </Entity>*/}
+
+
+               
+            </a-scene>
             }
          </div>
          // </body>
