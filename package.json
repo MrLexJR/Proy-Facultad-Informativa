@@ -11,7 +11,7 @@
     "aframe-physics-system": "^4.0.1",
     "aframe-react": "^4.3.0",
     "aframe-watcher": "^1.4.0",
-    "bcrypt": "^3.0.6",
+    "bcrypt": "^5.0.0",
     "bootstrap": "^4.3.1",
     "classnames": "^2.2.6",
     "dotenv": "^8.0.0",
